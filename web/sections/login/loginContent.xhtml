@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:panelGrid id="grid" columns="1" styleClass="login">
+                    <h:outputText styleClass="emphasis" value="#{msgs.usernamePrompt}"/>
+                    <p:inputText id="name" value="#{user.username}" required ="true" requiredMessage="#{msgs.usernameRequired}"/>
+                    
+                    <h:outputText styleClass="emphasis" value="#{msgs.passwordPrompt}"/>
+                    <p:password id="password" value="#{user.password}" required="true" requiredMessage="#{msgs.passwordRequired}"/>
+                    <p:messages id="allmsg" autoUpdate="true" showDetail="false" showSummary="true"/>
+                    <p:commandButton id="loginbutton" value="#{msgs.loginButtonText}" action="#{user.logMeIn}"/>
+                </p:panelGrid>     
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

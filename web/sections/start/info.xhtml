@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <p:panelGrid columns="2">
+                <f:facet name="header">
+                    <h:outputText styleClass="emphasis bolded" value="#{msgs.personalData}"/>
+                </f:facet>
+                <h:outputText styleClass="emphasis" value="#{msgs.namePrompt}"/>
+                <h:outputText value="#{user.name}"/>
+                <h:outputText styleClass="emphasis" value="#{msgs.surnamePrompt}"/>
+                <h:outputText value="#{user.surname}"/>
+                <h:outputText styleClass="emphasis" value="#{msgs.phonePrompt}"/>
+                <h:outputText value="#{user.phone}"/>
+                <h:outputText styleClass="emphasis" value="#{msgs.emailPrompt}"/>
+                <h:outputText value="#{user.email}"/>
+            </p:panelGrid>
+        </ui:composition>
+    </h:body>
+</html>
+

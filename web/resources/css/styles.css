@@ -1,0 +1,72 @@
+.bolded {
+    font-weight: bold;
+}
+
+.emphasis {
+    font-size: 1.3em;
+}
+
+.error {
+    color: red;
+}
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 90% !important;
+}
+
+.ui-panelgrid.login td, .ui-panelgrid.login tr {
+    border-style: none;
+}
+
+.ui-panelgrid.tasks{
+    width: 100%;
+}
+
+.ui-panelgrid.tasks td, .ui-panelgrid.tasks tr{
+    text-align: center;
+    border-style: none;
+    padding: 0px 30px;
+}
+
+#header{
+    font-size: 1.3em;
+    font-family: Arial;
+    font-weight: bold;
+    text-align: center;
+}
+
+#footer{
+    font-size: 0.7em;
+    font-family: Arial;
+    text-align: center;
+    position: absolute;
+    top: 95%;
+    left: 45%;
+}
+
+#menu {
+    background-color: beige;
+    text-align: center;
+    font-size: 1.2em;
+    font-family: Arial;
+    font-weight: bold;
+    position: absolute;
+    width: 200px;
+    height: 60%;
+}
+
+#content {
+    position: absolute;
+    top: 100px;
+    width: 300px;
+    left: 40%; 
+}
+
+.menuItem {
+    padding-top: 10px;
+}
+
+.menuLink{
+    text-decoration: none;
+    color: #999999;
+}
