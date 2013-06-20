@@ -8,7 +8,7 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean(name = "nav")
 public class Nav implements Serializable {
     
-    private String page = "/sections/start/info.xhtml";
+    private String page = "/sections/login/loginContent.xhtml";
     private static final String adminMenu = "/sections/start/adminMenu.xhtml";
     private static final String studentMenu = "/sections/start/studentMenu.xhtml";
     private static final String teacherMenu = "/sections/start/teacherMenu.xhtml";

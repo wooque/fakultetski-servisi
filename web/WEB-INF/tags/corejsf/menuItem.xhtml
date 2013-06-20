@@ -11,7 +11,7 @@
         <ui:composition>
             <div class="menuItem">
                 <h:form>
-                    <p:commandLink value="#{label}" action="#{nav.setPage(page)}" update=":startcontent" styleClass="menuLink"/>
+                    <p:commandLink value="#{label}" action="#{nav.setPage(page)}" update="#{update}" styleClass="menuLink"/>
                 </h:form>
             </div>
         </ui:composition>

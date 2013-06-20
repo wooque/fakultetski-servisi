@@ -56,4 +56,33 @@ public class App {
         DB.getInstance().putConnection(conn);
         return true;
     }
+    
+    public boolean changePassword(User user) throws DBError{
+
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "select * from User u where u.username='"+user.getUsername()+
+                            "' and password='"+user.getPassword()+"';";
+            ResultSet rs = stat.executeQuery(query);
+            if(rs.next()){
+                query = "update User set password='"+user.getNewpassword()+"' where username='"+user.getUsername()+"';";
+                stat.executeUpdate(query);
+            }else{
+                stat.close();
+                DB.getInstance().putConnection(conn);
+                return false;
+            }
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+        return true;
+    }
 }

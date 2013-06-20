@@ -14,6 +14,7 @@ public class User implements Serializable {
     
     private String username;
     private String password;
+    private String newpassword;
     private String type;
     private String name;
     private String surname;
@@ -25,7 +26,10 @@ public class User implements Serializable {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
+ 
+    public String getNewpassword() { return newpassword; }
+    public void setNewpassword(String newpassword) { this.newpassword = newpassword; }
+    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -41,7 +45,7 @@ public class User implements Serializable {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
     
-    public String logMeIn() {
+    public String logMeIn(Nav nav) {
         boolean outcome;
         try {
             outcome = App.getInstance().login(this);
@@ -49,7 +53,29 @@ public class User implements Serializable {
             return "error";
         }
         if (outcome) {
+            if(type.equals("admin")) {
+                nav.setPage("/sections/start/admin.xhtml");
+            } else {
+                nav.setPage("/sections/start/info.xhtml");
+            }
             return "start?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wrong username or password", "IGNORED"));
+            return "index";
+        }
+    }
+    
+    public String changePassword(Nav nav) {
+        boolean outcome;
+        try {
+            outcome = App.getInstance().changePassword(this);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        if (outcome) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Password changed", "IGNORED"));
+            nav.setPage("/sections/login/loginContent.xhtml");
+            return "index";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wrong username or password", "IGNORED"));
             return "index";
@@ -60,5 +86,5 @@ public class User implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index?faces-redirect=true";
     }
-    
+   
 }

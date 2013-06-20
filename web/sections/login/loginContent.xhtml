@@ -17,7 +17,7 @@
                     <h:outputText styleClass="emphasis" value="#{msgs.passwordPrompt}"/>
                     <p:password id="password" value="#{user.password}" required="true" requiredMessage="#{msgs.passwordRequired}"/>
                     <p:messages id="allmsg" autoUpdate="true" showDetail="false" showSummary="true"/>
-                    <p:commandButton id="loginbutton" value="#{msgs.loginButtonText}" action="#{user.logMeIn}"/>
+                    <p:commandButton id="loginbutton" value="#{msgs.loginButtonText}" action="#{user.logMeIn(nav)}"/>
                 </p:panelGrid>     
             </h:form>
         </ui:composition>
