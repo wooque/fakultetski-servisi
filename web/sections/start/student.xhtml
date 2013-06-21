@@ -10,18 +10,30 @@
     </h:head>
     <h:body>
         <ui:composition>
-            <p:panelGrid columns="2">
+            <p:panelGrid columns="2" styleClass="info">
                 <f:facet name="header">
                     <h:outputText styleClass="emphasis bolded" value="#{msgs.personalData}"/>
                 </f:facet>
                 <h:outputText styleClass="emphasis" value="#{msgs.namePrompt}"/>
                 <h:outputText value="#{user.name}"/>
+                
                 <h:outputText styleClass="emphasis" value="#{msgs.surnamePrompt}"/>
                 <h:outputText value="#{user.surname}"/>
+                
                 <h:outputText styleClass="emphasis" value="#{msgs.phonePrompt}"/>
                 <h:outputText value="#{user.phone}"/>
+                
                 <h:outputText styleClass="emphasis" value="#{msgs.emailPrompt}"/>
                 <h:outputText value="#{user.email}"/>
+                
+                <h:outputText styleClass="emphasis" value="#{msgs.departmentPrompt}"/>
+                <h:outputText value="#{student.department}"/>
+                
+                <h:outputText styleClass="emphasis" value="#{msgs.yearPrompt}"/>
+                <h:outputText value="#{student.year}"/>
+                
+                <h:outputText styleClass="emphasis" value="#{msgs.GPAPrompt}"/>
+                <h:outputText value="#{student.GPA}"/>
             </p:panelGrid>
         </ui:composition>
     </h:body>

@@ -45,18 +45,20 @@ public class User implements Serializable {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
     
-    public String logMeIn(Nav nav) {
+    public String logMeIn(Admin admin, Student student, Nav nav) {
         boolean outcome;
         try {
-            outcome = App.getInstance().login(this);
+            outcome = App.getInstance().login(admin, student, this);
         } catch (DBError dbe) {
             return "error";
         }
         if (outcome) {
             if(type.equals("admin")) {
                 nav.setPage("/sections/start/admin.xhtml");
+            } else if(type.equals("student")){
+                nav.setPage("/sections/start/student.xhtml");
             } else {
-                nav.setPage("/sections/start/info.xhtml");
+                 nav.setPage("/sections/start/teacher.xhtml");
             }
             return "start?faces-redirect=true";
         } else {

@@ -10,7 +10,13 @@
     </h:head>
     <h:body>
         <ui:composition>
-            <corejsf:menuItem label="Info" page="/sections/start/info.xhtml" update=":pagecontent"/>
+            <div class="menuItem">
+                <h:form>
+                    <p:commandLink id="requestitem" value="Requests(#{admin.signUpsNum})" action="#{admin.loadSignUps(nav)}" 
+                                   update=":pagecontent,requestitem" styleClass="#{admin.signUpsNum == '0'? 'menuLink': 'menuLinkEmphased'}"/>
+                </h:form>
+            </div>
+            <corejsf:menuItem label="Add users" page="/sections/start/add.xhtml" update=":pagecontent"/>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>

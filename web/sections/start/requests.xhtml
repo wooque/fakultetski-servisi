@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:dataTable id="signuptable" value="#{admin.signups}" var="signuprequest">
+                    <p:column headerText="Type">
+                        <h:outputText value="#{signuprequest.type}"/>
+                    </p:column>
+                    <p:column headerText="Username">
+                        <h:outputText value="#{signuprequest.username}"/>
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{signuprequest.name}"/>
+                    </p:column>
+                    <p:column headerText="Surname">
+                        <h:outputText value="#{signuprequest.surname}"/>
+                    </p:column>
+                    <p:column headerText="Phone">
+                        <h:outputText value="#{signuprequest.phone}"/>
+                    </p:column>
+                    <p:column headerText="Email">
+                        <h:outputText value="#{signuprequest.email}"/>
+                    </p:column>
+                    <p:column headerText="Department">
+                        <h:outputText value="#{signuprequest.department}"/>
+                    </p:column>
+                    <p:column headerText="Year">
+                        <h:outputText value="#{signuprequest.year}"/>
+                    </p:column>
+                    <p:column headerText="GPA">
+                        <h:outputText value="#{signuprequest.GPA}"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Accept" action="#{admin.accept(signuprequest)}" process="@this" update=":pagemenu,signuptable"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Reject" action="#{admin.reject(signuprequest)}" process="@this" update=":pagemenu,signuptable"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

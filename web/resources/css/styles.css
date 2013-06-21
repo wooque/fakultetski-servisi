@@ -14,18 +14,30 @@
     font-size: 90% !important;
 }
 
+.ui-panelgrid.info {
+    margin-left: 300px;
+}
+
+.ui-panelgrid.login {
+    margin-left: 300px;
+}
+
 .ui-panelgrid.login td, .ui-panelgrid.login tr {
     border-style: none;
 }
 
-.ui-panelgrid.tasks{
-    width: 100%;
+.ui-panelgrid.signupcell td, .ui-panelgrid.signupcell tr {
+    border-style: none;
 }
 
-.ui-panelgrid.tasks td, .ui-panelgrid.tasks tr{
-    text-align: center;
-    border-style: none;
-    padding: 0px 30px;
+.signup {
+    margin-left: 200px;
+    width: 800px;
+}
+
+.signup td, .signup tr {
+    vertical-align: top;
+    width: 33%;
 }
 
 #header{
@@ -58,8 +70,9 @@
 #content {
     position: absolute;
     top: 100px;
-    width: 300px;
-    left: 40%; 
+    left: 50%; 
+    width: 800px;
+    margin-left: -400px;
 }
 
 .menuItem {
@@ -69,4 +82,9 @@
 .menuLink{
     text-decoration: none;
     color: #999999;
+}
+
+.menuLinkEmphased {
+    text-decoration: none;
+    color: crimson;
 }

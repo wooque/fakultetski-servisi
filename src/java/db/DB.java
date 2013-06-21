@@ -5,7 +5,7 @@ import java.sql.*;
 public class DB {
 
   private static DB instance;
-  private static final int MAX_CON = 1;
+  private static final int MAX_CON = 2;
   private static final Connection[] bafer = new Connection[MAX_CON];
   private int first = 0, last = 0, free = MAX_CON;
 

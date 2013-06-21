@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <h:panelGrid columns="3" styleClass="signup">
+                    <p:panelGrid columns="1" styleClass="signupcell">
+                        <h:outputText styleClass="emphasis" value="#{msgs.usernamePrompt}"/>
+                        <p:inputText id="username" value="#{signup.username}" required ="true" requiredMessage="#{msgs.usernameRequired}">
+                            <p:ajax event="blur" process="@this" listener="#{signup.checkUsername()}" update="allmsg"/>
+                        </p:inputText>
+                        <p:message id="usernamemsg" for="username"/>
+
+                        <h:outputText styleClass="emphasis" value="#{msgs.passwordPrompt}"/>
+                        <p:password id="password" value="#{signup.password}" required="true" requiredMessage="#{msgs.passwordRequired}"/>
+                        <p:message id="passwordmsg" for="password"/>
+                        
+                        <h:outputText styleClass="emphasis" value="#{msgs.typePrompt}"/>
+                        <p:selectOneRadio id="type" value="#{signup.type}" required="true" requiredMessage="#{msgs.typeRequired}">
+                            <f:selectItems value="#{signup.types}"/>
+                            <p:ajax event="change" process="@this" update="studentgrid"/>
+                        </p:selectOneRadio>
+                        <p:message id="typemsg" for="type"/>
+                       
+                        <p:messages id="allmsg" globalOnly="true" autoUpdate="true" showDetail="false" showSummary="true"/>
+                        <p:commandButton id="signupbutton" value="#{msgs.addUserText}" action="#{admin.add(signup)}" update=":pagecontent"/>
+                    </p:panelGrid>
+                    
+                    <p:panelGrid columns="1" styleClass="signupcell">
+                        <h:outputText styleClass="emphasis" value="#{msgs.namePrompt}"/>
+                        <p:inputText id="name" value="#{signup.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
+                        <p:message id="namemsg" for="name"/>
+
+                        <h:outputText styleClass="emphasis" value="#{msgs.surnamePrompt}"/>
+                        <p:inputText id="surname" value="#{signup.surname}" required="true" requiredMessage="#{msgs.surnameRequired}"/>
+                        <p:message id="surnamemsg" for="surname"/>
+                        
+                        <h:outputText styleClass="emphasis" value="#{msgs.phonePrompt}"/>
+                        <p:inputText id="phone" value="#{signup.phone}" required="true" requiredMessage="#{msgs.phoneRequired}"/>
+                        <p:message id="phonemsg" for="phone"/>
+
+                        <h:outputText styleClass="emphasis" value="#{msgs.emailPrompt}"/>
+                        <p:inputText id="email" value="#{signup.email}" required="true" requiredMessage="#{msgs.emailRequired}"/>
+                        <p:message id="emailmsg" for="email"/>
+                    </p:panelGrid>
+                    
+                    <p:panelGrid id="studentgrid" columns="1" styleClass="signupcell">
+                        <h:outputText id="departmentlabel" styleClass="emphasis" value="#{msgs.departmentPrompt}" rendered="#{signup.type == 'student'}"/>
+                        <p:selectOneMenu id="department" value="#{signup.department}" required="true" requiredMessage="#{msgs.departmentRequired}" rendered="#{signup.type == 'student'}">
+                            <f:selectItems value="#{signup.departments}"/>
+                        </p:selectOneMenu>
+                        <p:message id="departmentmsg" for="department"/>
+                        
+                        <h:outputText id="yearlabel" styleClass="emphasis" value="#{msgs.yearPrompt}" rendered="#{signup.type == 'student'}"/>
+                        <p:selectOneMenu id="year" value="#{signup.year}" required="true" requiredMessage="#{msgs.yearRequired}" rendered="#{signup.type == 'student'}">
+                            <f:selectItems value="#{signup.years}"/>
+                        </p:selectOneMenu>
+                        <p:message id="yearmsg" for="year"/>
+                        
+                        <h:outputText id="gpalabel" styleClass="emphasis" value="#{msgs.GPAPrompt}" rendered="#{signup.type == 'student'}"/>
+                        <p:inputText id="gpa" value="#{signup.GPA}" required="true" requiredMessage="#{msgs.GPARequired}" rendered="#{signup.type == 'student'}"/>
+                        <p:message id="gpamsg" for="gpa"/>
+                    </p:panelGrid>
+                </h:panelGrid>
+                    
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+
