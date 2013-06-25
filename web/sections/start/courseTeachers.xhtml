@@ -12,31 +12,32 @@
         <ui:composition>
             <p>
                 <p:panel>
-                    <h:outputText styleClass="emphasis bolded" value="Course added. Now add teachers"/>
+                    <h:outputText styleClass="emphasis bolded" value="#{msgs.addTeachers}"/>
                 </p:panel>
             </p>
             <h:form>
+                <p:messages id="allmsg" globalOnly="true" showDetail="false" showSummary="true"/>
                 <p:dataTable id="teacherstable" value="#{course.teachers}" var="t">
-                    <p:column headerText="Name">
+                    <p:column headerText="#{msgs.namePrompt}">
                         #{t.name}
                     </p:column>
-                    <p:column headerText="Surname">
+                    <p:column headerText="#{msgs.surnamePrompt}">
                         #{t.surname}
                     </p:column>
-                    <p:column headerText="Username">
+                    <p:column headerText="#{msgs.usernamePrompt}">
                         #{t.username}
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Delete" action="#{course.removeTeacher(t)}" process="@this" update="teacherstable"/>
+                        <p:commandButton value="#{msgs.removeTeacher}" action="#{course.removeTeacher(t)}" process="@this" update="teacherstable"/>
                     </p:column>
                 </p:dataTable>
                 <p></p>
                 <p:autoComplete id="teacherauto" value="#{course.teacher}" completeMethod="#{teacher.completeTeacher}" var="t" 
                                 itemLabel="#{t.name} #{t.surname} (#{t.username})" itemValue="#{t}" forceSelection="true"/>
                 &nbsp;
-                <p:commandButton value="Add" action="#{course.addTeacher}" process="@form" update="teacherstable,teacherauto"/>
+                <p:commandButton value="#{msgs.addTeacher}" action="#{course.addTeacher}" process="@form" update="teacherstable,teacherauto,allmsg"/>
                 <p></p>
-                <p:commandButton value="Finish" action="#{course.saveTeachers(nav)}" update=":pagecontent"/>
+                <p:commandButton value="#{msgs.saveTeachers}" action="#{admin.addTeachersToCourse(course, nav)}" update=":pagecontent"/>
 
             </h:form>
         </ui:composition>

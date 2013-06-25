@@ -65,7 +65,8 @@ public class User implements Serializable {
                  nav.setPage("/sections/start/teacher.xhtml");
             }
             int month = Calendar.getInstance().get(Calendar.MONTH);
-            beginOfTheYear = (month == 9);
+            // TO DO: set actual month in the release
+            beginOfTheYear = (month == 5);
             return "start?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wrong username or password", "IGNORED"));

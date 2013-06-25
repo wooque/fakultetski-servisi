@@ -2,8 +2,10 @@ package com.corejsf;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 @ManagedBean(name = "course")
@@ -79,7 +81,11 @@ public class Course implements Serializable{
     public void setTeachers(LinkedList<Teacher> teachers) { this.teachers = teachers; }
    
     public String addTeacher(){
-        teachers.add(teacher);
+        if(teachers.contains(teacher)){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "User already added", "IGNORED"));
+        } else {
+            teachers.add(teacher);
+        }
         teacher = null;
         return "start";
     }
@@ -88,14 +94,7 @@ public class Course implements Serializable{
         teachers.remove(teacher);
         return "start";
     }
-    
-    public String saveTeachers(Nav nav){
-        // save teachers in database
-        nav.setPage("/sections/start/courses.xhtml");
-        clear();
-        return "start";
-    }
-    
+
     public void clear() {
         department = null;
         teachingYear = null;

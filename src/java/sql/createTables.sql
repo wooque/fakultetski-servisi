@@ -35,3 +35,10 @@ create table Course(    CourseID INTEGER AUTO_INCREMENT,
                         semester BIT,
                         year INTEGER,
                         PRIMARY KEY(CourseID));
+
+create table Teaches(   TeachesID INTEGER AUTO_INCREMENT,
+                        CourseID INTEGER NOT NULL,
+                        username VARCHAR(20),
+                        PRIMARY KEY(TeachesID),
+                        FOREIGN KEY (CourseID) references Course(CourseID) on delete cascade on update cascade,
+                        FOREIGN KEY (username) references User(username) on delete cascade on update cascade);

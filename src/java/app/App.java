@@ -301,6 +301,7 @@ public class App {
         DB.getInstance().putConnection(conn);
         return true;
     }
+    
     public LinkedList<Teacher> completeTeacher(String input) throws DBError {
         Connection conn = db.getConnection();
         LinkedList<Teacher> teacherlist = new LinkedList<Teacher>();
@@ -326,5 +327,34 @@ public class App {
         }
         DB.getInstance().putConnection(conn);
         return teacherlist;
+    }
+    
+    public void addTeachers(Course course) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "select * from Course where department='"+course.getDepartment()+"' and teachyear='"+course.getTeachingYear()
+                            +"' and code='"+course.getCode()+"' and year='"+course.getYear()+"';";
+            ResultSet rs = stat.executeQuery(query);
+            if(!rs.next()){
+                stat.close();
+                DB.getInstance().putConnection(conn);
+                throw new DBError();
+            }
+            int id = rs.getInt("CourseID");
+            for(Teacher teacher: course.getTeachers()){
+                query = "insert into Teaches (CourseID, username) values ('"+id+"','"+teacher.getUsername()+"');";
+                stat.executeUpdate(query);
+            }
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
     }
 }

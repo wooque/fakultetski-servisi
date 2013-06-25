@@ -65,10 +65,18 @@ public class Admin implements Serializable{
         if (!outcome) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Course exist", "IGNORED"));
         } else {
-            //course.clear();
-            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Course added", "IGNORED"));
             nav.setPage("/sections/start/courseTeachers.xhtml");
         }
+        return "start";
+    }
+    public String addTeachersToCourse(Course course, Nav nav) {
+        try {
+            App.getInstance().addTeachers(course);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        course.clear();
+        nav.setPage("/sections/start/courses.xhtml");
         return "start";
     }
 }
