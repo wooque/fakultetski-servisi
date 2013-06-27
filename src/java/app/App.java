@@ -555,7 +555,7 @@ public class App {
         DB.getInstance().putConnection(conn);
     }
     
-    public void searchDemonstrators(User user, Search search) throws DBError{
+    public void searchDemonstrators(User user, Teacher teacher, Search search) throws DBError{
         Connection conn = db.getConnection();
         
         if(conn==null){
@@ -572,6 +572,23 @@ public class App {
                 query.append(" and t.username='");
                 query.append(user.getUsername());
                 query.append("' and t.courseID=d.courseID");
+            }
+            if(search.isSpecific()){
+                query.append(" and(");
+                LinkedList<Course> teacherCourses = teacher.getCourses();
+                for(int i = 0; i < teacherCourses.size(); i++){
+                    Course course = teacherCourses.get(i);
+                    if(course.isSelected()){
+                        if(i != 0){
+                            query.append(" or ");
+                        }
+                        query.append("d.courseID='");
+                        query.append(course.getId());
+                        query.append("'");
+                        
+                    }
+                }
+                query.append(")");
             }
             if(!search.getName().isEmpty()){
                 query.append(" and u.name='");

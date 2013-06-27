@@ -72,9 +72,9 @@ public class Search implements Serializable{
         }
     }
     
-    public String searchDemostrators(User user) {
+    public String searchDemostrators(User user, Teacher teacher) {
         try{
-            App.getInstance().searchDemonstrators(user, this);
+            App.getInstance().searchDemonstrators(user, teacher, this);
         } catch (DBError dbe){
             return "error";
         }

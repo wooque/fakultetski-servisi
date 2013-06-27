@@ -19,12 +19,26 @@
                     <p:inputText value="#{search.surname}"/>
                 </p:panelGrid>
                 <p:panelGrid columns="1" styleClass="signupcell">
-                    <p:selectOneRadio value="#{search.mode}">
+                    <p:selectOneRadio id="select" value="#{search.mode}">
                         <f:selectItems value="#{search.modes}"/>
+                        <p:ajax event="change" process="@this" update="courses"/>
                     </p:selectOneRadio> 
                 </p:panelGrid>
+                <h:panelGroup id="courses">
+                    <p:dataTable id="selectedcourses" value="#{teacher.courses}" var="c" rendered="#{search.mode == 'S'}">
+                        <p:column headerText="#{msgs.codePrompt}">
+                            #{c.department}#{c.teachingYear}#{c.code}
+                        </p:column>
+                        <p:column headerText="#{msgs.namePrompt}">
+                            #{c.name}
+                        </p:column>
+                        <p:column>
+                            <p:selectBooleanCheckbox value="#{c.selected}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
                 <p>
-                    <p:commandButton value="#{msgs.searchButtonText}" action="#{search.searchDemostrators(user)}" process="@form" update=":pagecontent"/>
+                    <p:commandButton value="#{msgs.searchButtonText}" action="#{search.searchDemostrators(user, teacher)}" process="@form" update=":pagecontent"/>
                 </p>
             </h:form>
             <p:dataTable value="#{search.result}" var="elem" rendered="#{not empty search.result}">
