@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>IGNORED</title>
     </h:head>
@@ -17,8 +18,13 @@
                     <h:outputText value="#{msgs.surnamePrompt}" styleClass="emphasis bolded"/>
                     <p:inputText value="#{search.surname}"/>
                 </p:panelGrid>
+                <p:panelGrid columns="1" styleClass="signupcell">
+                    <p:selectOneRadio value="#{search.mode}">
+                        <f:selectItems value="#{search.modes}"/>
+                    </p:selectOneRadio> 
+                </p:panelGrid>
                 <p>
-                    <p:commandButton value="#{msgs.searchButtonText}" action="#{search.searchDemostrators(teacher.courses)}" process="@form" update=":pagecontent"/>
+                    <p:commandButton value="#{msgs.searchButtonText}" action="#{search.searchDemostrators(user)}" process="@form" update=":pagecontent"/>
                 </p>
             </h:form>
             <p:dataTable value="#{search.result}" var="elem" rendered="#{not empty search.result}">

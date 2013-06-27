@@ -555,7 +555,7 @@ public class App {
         DB.getInstance().putConnection(conn);
     }
     
-    public void searchDemonstrators(Search search) throws DBError{
+    public void searchDemonstrators(User user, Search search) throws DBError{
         Connection conn = db.getConnection();
         
         if(conn==null){
@@ -563,8 +563,16 @@ public class App {
         }
         try {
             Statement stat = conn.createStatement();
-            StringBuilder query = new StringBuilder("select u.name, u.surname, u.phone, u.email, s.year, s.gpa from User u, Student s, Demonstrator d "
-                    + "where d.username=u.username and d.username=s.username");
+            StringBuilder query = new StringBuilder("select u.name, u.surname, u.phone, u.email, s.year, s.gpa from User u, Student s, Demonstrator d ");
+            if(search.isMyCourses()){
+                query.append(", Teaches t ");
+            }
+            query.append("where d.username=u.username and d.username=s.username");
+            if(search.isMyCourses()){
+                query.append(" and t.username='");
+                query.append(user.getUsername());
+                query.append("' and t.courseID=d.courseID");
+            }
             if(!search.getName().isEmpty()){
                 query.append(" and u.name='");
                 query.append(search.getName());
