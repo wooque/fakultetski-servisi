@@ -12,6 +12,8 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class Course implements Serializable{
     
+    private boolean selected;
+    private Integer id;
     private String department = "IR";
     private Integer teachingYear;
     private String code;
@@ -55,6 +57,12 @@ public class Course implements Serializable{
     public SelectItem[] getYears(){ return years; }
     public SelectItem[] getDepartments(){ return departments; }
     public SelectItem[] getTeachingYears(){ return teachingYears; }
+
+    public boolean isSelected() { return selected; }
+    public void setSelected(boolean selected) { this.selected = selected; }
+    
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
@@ -103,6 +111,6 @@ public class Course implements Serializable{
         semester = null;
         year = null;
         teacher = null;
-        teachers = null;
+        teachers = new LinkedList<Teacher>();
     }
 }

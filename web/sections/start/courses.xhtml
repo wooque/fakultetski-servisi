@@ -47,7 +47,7 @@
                         <p:message id="yearmsg" for="year"/>
                         
                         <p:messages id="allmsg" globalOnly="true" autoUpdate="true"/>
-                        <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course, nav)}" update=":pagecontent"/>
+                        <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course, nav)}" process="@form" update=":pagecontent"/>
                     </p:panelGrid>
                 </h:panelGrid>
             </h:form>

@@ -15,6 +15,9 @@ public class Teacher implements Serializable{
     private String username;
     private String name;
     private String surname;
+    private LinkedList<Course> courses;
+    private Course currentCourse;
+    private LinkedList<LinkedList<Apply>> applies;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -24,6 +27,41 @@ public class Teacher implements Serializable{
 
     public String getSurname() { return surname; }
     public void setSurname(String surname) { this.surname = surname; }
+    
+    public LinkedList<Course> getCourses() { return courses; }
+    public void setCourses(LinkedList<Course> courses) { this.courses = courses; }
+
+    public LinkedList<LinkedList<Apply>> getApplies() { return applies; }
+    public void setApplies(LinkedList<LinkedList<Apply>> applies) { this.applies = applies; }
+    
+    public Course getCurrentCourse() { return currentCourse; }
+    public void setCurrentCourse(Course currentCourse, Nav nav) { 
+        this.currentCourse = currentCourse; 
+        nav.setPage("/sections/start/applies.xhtml");
+    }
+    
+    public String getAppliesNum(){
+        int num = 0;
+        for(int i = 0; i < applies.size(); i++){
+            num += applies.get(i).size();
+        }
+        return Integer.toString(num);
+    }
+    public String getCourseApplies(Course c){
+        for(int i = 0; i < applies.size(); i++){
+            Course courseTemp = courses.get(i);
+            if(courseTemp.getDepartment().equals(c.getDepartment()) && (courseTemp.getTeachingYear() == c.getTeachingYear())
+                && courseTemp.getCode().equals(c.getCode())){
+                return Integer.toString(applies.get(i).size());
+            }
+        }
+        return "ERROR";
+    }
+    
+    public LinkedList<Apply> getCurrentApplies() {
+        int i = courses.indexOf(currentCourse);
+        return applies.get(i);
+    }
         
     public  List<Teacher> completeTeacher(String query) {
         LinkedList<Teacher> teachers = new LinkedList<Teacher>();
@@ -31,6 +69,32 @@ public class Teacher implements Serializable{
              teachers = App.getInstance().completeTeacher(query);
         } catch (DBError dbe){}
         return teachers;
+    }
+    
+    public String loadApplies(Nav nav){
+        try{
+            App.getInstance().loadApplies(this);
+        } catch (DBError dbe){
+            return "error";
+        }
+        nav.setPage("/sections/start/appliesStart.xhtml");
+        return "start";
+    }
+    
+    public void accept(Apply apply) {
+        getCurrentApplies().remove(apply);
+        try {
+            App.getInstance().accept(apply);
+        } catch (DBError dbe) {
+        }
+    }
+    
+    public void reject(Apply apply) {
+        getCurrentApplies().remove(apply);
+        try {
+            App.getInstance().reject(apply);
+        } catch (DBError dbe) {
+        }
     }
     
     @Override

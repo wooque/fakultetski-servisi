@@ -10,7 +10,14 @@
     </h:head>
     <h:body>
         <ui:composition>
-            <corejsf:menuItem label="Info" page="/sections/start/info.xhtml" update=":pagecontent"/>
+            <corejsf:menuItem label="Info" page="/sections/start/student.xhtml" update=":pagecontent"/>
+            <h:panelGroup rendered="#{user.surveysActivated and not student.applied}">
+                <div class="menuItem">
+                    <h:form>
+                        <p:commandLink value="Surveys" action="#{student.loadSurveys(nav)}" update=":pagecontent" styleClass="menuLink"/>
+                    </h:form>
+                </div>
+            </h:panelGroup>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>

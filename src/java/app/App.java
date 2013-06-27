@@ -1,6 +1,7 @@
 package app;
 
 import com.corejsf.Admin;
+import com.corejsf.Apply;
 import com.corejsf.Course;
 import com.corejsf.Signup;
 import com.corejsf.Student;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 public class App {
@@ -31,7 +33,7 @@ public class App {
         }
     }
     
-    public boolean login(Admin admin, Student student, User user) throws DBError{
+    public boolean login(Admin admin, Teacher teacher, Student student, User user) throws DBError{
 
         Connection conn = db.getConnection();
         
@@ -61,6 +63,13 @@ public class App {
                     student.setDepartment(rs.getString("department"));
                     student.setYear(rs.getInt("year"));
                     student.setGPA(rs.getFloat("gpa"));
+                    query = "select * from Apply where username='"+user.getUsername()+"';";
+                    rs = stat.executeQuery(query);
+                    if(rs.next()){
+                        student.setApplied(true);
+                    } else {
+                        student.setApplied(false);
+                    }
                 } else {
                     stat.close();
                     DB.getInstance().putConnection(conn);
@@ -88,6 +97,35 @@ public class App {
                     signups.add(signup);
                 }
                 admin.setSignups(signups);
+            } else if(user.getType().equals("teacher")) {
+                LinkedList<Integer> courseIDs = new LinkedList<Integer>();
+                LinkedList<Course> courses = new LinkedList<Course>();
+                query = "select * from Teaches where username='"+user.getUsername()+"';";
+                rs = stat.executeQuery(query);
+                while(rs.next()){
+                    courseIDs.add(rs.getInt("CourseID"));
+                }
+                for(Integer courseID: courseIDs){
+                    query = "select * from Course where CourseID='"+courseID+"';";
+                    rs = stat.executeQuery(query);
+                    if(rs.next()){
+                        Course course = new Course();
+                        course.setId(courseID);
+                        course.setCode(rs.getString("code"));
+                        course.setDepartment(rs.getString("department"));
+                        course.setName(rs.getString("name"));
+                        if(rs.getInt("semester") == 0){
+                            course.setSemester("summer");
+                        } else {
+                            course.setSemester("winter");
+                        }
+                        course.setTeachingYear(rs.getInt("teachyear"));
+                        course.setYear(rs.getInt("year"));
+                        courses.add(course);
+                    }
+                }
+                teacher.setCourses(courses);
+                loadApplies(teacher);
             }
             stat.close();
         } catch (SQLException ex) {
@@ -350,6 +388,163 @@ public class App {
                 query = "insert into Teaches (CourseID, username) values ('"+id+"','"+teacher.getUsername()+"');";
                 stat.executeUpdate(query);
             }
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void loadSurveys(Student student) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            if(cal.get(Calendar.MONTH) < 9) {
+                year--;
+            }
+            Statement stat = conn.createStatement();
+            String query = "select * from Course where department='"+student.getDepartment()+"' and teachyear<'"+student.getYear()
+                            +"' and ((year='"+year+"' and semester=1) or (year='"+(year+1)+"' and semester=0));";
+            ResultSet rs = stat.executeQuery(query);
+            LinkedList<Course> courses = new LinkedList<Course>();
+            while(rs.next()){
+                Course course = new Course();
+                course.setId(rs.getInt("CourseID"));
+                course.setCode(rs.getString("code"));
+                course.setDepartment(rs.getString("department"));
+                course.setName(rs.getString("name"));
+                if(rs.getInt("semester") == 0){
+                    course.setSemester("summer");
+                } else {
+                    course.setSemester("winter");
+                }
+                course.setTeachingYear(rs.getInt("teachyear"));
+                course.setYear(year);
+                courses.add(course);
+            }
+            student.setAvailableCourses(courses);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void apply(User user, Student student) throws DBError{
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query;
+            LinkedList<Course> selectedCourses = new LinkedList<Course>();
+            for(Course course: student.getAvailableCourses()){
+                if(course.isSelected()){
+                    query = "insert into Apply (username, CourseID) values ('"+user.getUsername()+"','"+course.getId()+"');";
+                    stat.executeUpdate(query);
+                    selectedCourses.add(course);
+                }
+            }
+            student.setSelectedCourses(selectedCourses);
+            student.setAvailableCourses(null);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void loadApplies(Teacher teacher) throws DBError {
+        
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query;
+            LinkedList<LinkedList<Apply>> applies = new LinkedList<LinkedList<Apply>>();
+            for(Course course: teacher.getCourses()){
+                query = "select * from Apply where CourseID='"+course.getId()+"';";
+                ResultSet rs = stat.executeQuery(query);
+                LinkedList<Apply> courseApplies = new LinkedList<Apply>();
+                LinkedList<String> usernames = new LinkedList<String>();
+                while(rs.next()){
+                   usernames.add(rs.getString("username"));
+                }
+                for(String username: usernames) {
+                    Apply apply = new Apply();
+                    apply.setUsername(username);
+                    apply.setCourseID(course.getId());
+                    query = "select * from User where username='"+username+"';";
+                    rs = stat.executeQuery(query);
+                    if(rs.next()){
+                        apply.setName(rs.getString("name"));
+                        apply.setSurname(rs.getString("surname"));
+                        apply.setPhone(rs.getString("phone"));
+                        apply.setEmail(rs.getString("email"));
+                    }
+                    query = "select * from Student where username='"+username+"';";
+                    rs = stat.executeQuery(query);
+                    if(rs.next()){
+                        apply.setYear(rs.getInt("year"));
+                        apply.setGPA(rs.getFloat("gpa"));
+                    }
+                    courseApplies.add(apply);
+                }
+                applies.add(courseApplies);
+            }
+            teacher.setApplies(applies);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void accept(Apply apply) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query;
+            query = "insert into Demonstrator (CourseID, username) values ('"+apply.getCourseID()+"','"+apply.getUsername()+"');";
+            stat.executeUpdate(query);
+            query = "delete from Apply where username='"+apply.getUsername()+"' and CourseID='"+apply.getCourseID()+"';";
+            stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void reject(Apply apply) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "delete from Apply where username='"+apply.getUsername()+"' and CourseID='"+apply.getCourseID()+"';";
+            stat.executeUpdate(query);
             stat.close();
         } catch (SQLException ex) {
             DB.getInstance().putConnection(conn);

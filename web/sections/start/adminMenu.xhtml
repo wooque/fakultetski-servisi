@@ -17,8 +17,13 @@
                 </h:form>
             </div>
             <corejsf:menuItem label="Add users" page="/sections/start/users.xhtml" update=":pagecontent"/>
-            <h:panelGroup rendered="#{user.beginOfTheYear}">
+            <h:panelGroup rendered="#{user.beginOfTheYear and not user.surveysActivated}">
                 <corejsf:menuItem label="Add courses" page="/sections/start/courses.xhtml" update=":pagecontent"/>
+                <div class="menuItem">
+                <h:form>
+                    <p:commandLink value="#{msgs.activateSurveys}" action="#{user.activateSurveys(nav)}" update=":pagecontent,:pagemenu" styleClass="menuLink"/>
+                </h:form>
+            </div>
             </h:panelGroup>
             <div class="menuItem">
                 <h:form>

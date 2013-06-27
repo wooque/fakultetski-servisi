@@ -42,3 +42,17 @@ create table Teaches(   TeachesID INTEGER AUTO_INCREMENT,
                         PRIMARY KEY(TeachesID),
                         FOREIGN KEY (CourseID) references Course(CourseID) on delete cascade on update cascade,
                         FOREIGN KEY (username) references User(username) on delete cascade on update cascade);
+
+create table Apply(     ApplyID INTEGER AUTO_INCREMENT,
+                        username VARCHAR(20),
+                        CourseID INTEGER,
+                        PRIMARY KEY(ApplyID),
+                        FOREIGN KEY(username) references User(username) on delete cascade on update cascade,
+                        FOREIGN KEY(CourseID) references Course(CourseID) on delete cascade on update cascade);
+
+create table Demonstrator(  DemonstratorID INTEGER AUTO_INCREMENT,
+                            CourseID INTEGER,
+                            username VARCHAR(20),
+                            PRIMARY KEY(DemonstratorID),
+                            FOREIGN KEY(CourseID) references Course(CourseID) on update cascade on delete cascade,
+                            FOREIGN KEY(username) references User(username) on update cascade on delete cascade);

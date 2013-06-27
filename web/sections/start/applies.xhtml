@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:dataTable id="appliestable" value="#{teacher.currentApplies}" var="a">
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{a.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.surnamePrompt}">
+                        #{a.surname}
+                    </p:column>
+                    <p:column headerText="#{msgs.yearPrompt}">
+                        #{a.year}
+                    </p:column>
+                    <p:column headerText="#{msgs.GPAPrompt}">
+                        #{a.GPA}
+                    </p:column>
+                    <p:column headerText="#{msgs.phonePrompt}">
+                        #{a.phone}
+                    </p:column>
+                    <p:column headerText="#{msgs.emailPrompt}">
+                        #{a.email}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Accept" action="#{teacher.accept(a)}" process="@this" update=":pagemenu,appliestable"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Reject" action="#{teacher.reject(a)}" process="@this" update=":pagemenu,appliestable"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

@@ -20,7 +20,7 @@
                     <p:message id="passwordmsg" for="password"/>
                     
                     <p:messages id="allmsg" globalOnly="true" autoUpdate="true" showDetail="false" showSummary="true"/>
-                    <p:commandButton id="loginbutton" value="#{msgs.loginButtonText}" action="#{user.logMeIn(admin, student, nav)}" update=":pagecontent"/>
+                    <p:commandButton id="loginbutton" value="#{msgs.loginButtonText}" process="@form" action="#{user.logMeIn(admin, teacher, student, nav)}" update=":pagecontent"/>
                 </p:panelGrid>     
             </h:form>
         </ui:composition>

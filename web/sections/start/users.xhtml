@@ -31,7 +31,7 @@
                         <p:message id="typemsg" for="type"/>
                        
                         <p:messages id="allmsg" globalOnly="true" autoUpdate="true" showDetail="false" showSummary="true"/>
-                        <p:commandButton id="signupbutton" value="#{msgs.addUserText}" action="#{admin.add(signup)}" update=":pagecontent"/>
+                        <p:commandButton id="signupbutton" value="#{msgs.addUserText}" action="#{admin.add(signup)}" process="@form" update=":pagecontent"/>
                     </p:panelGrid>
                     
                     <p:panelGrid columns="1" styleClass="signupcell">

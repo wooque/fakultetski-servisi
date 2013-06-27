@@ -12,7 +12,7 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 @ManagedBean(name = "user")
 public class User implements Serializable {
-    
+
     private String username;
     private String password;
     private String newpassword;
@@ -22,6 +22,7 @@ public class User implements Serializable {
     private String phone;
     private String email;
     private boolean beginOfTheYear;
+    private static boolean surveysActivated;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -48,11 +49,14 @@ public class User implements Serializable {
     public void setType(String type) { this.type = type; }
     
     public boolean getBeginOfTheYear() { return beginOfTheYear; }
+    public synchronized boolean isSurveysActivated() { return surveysActivated; }
+    public synchronized void setSurveysActivated(boolean aSurveysActivated) { surveysActivated = aSurveysActivated; }
     
-    public String logMeIn(Admin admin, Student student, Nav nav) {
+    
+    public String logMeIn(Admin admin, Teacher teacher, Student student, Nav nav) {
         boolean outcome;
         try {
-            outcome = App.getInstance().login(admin, student, this);
+            outcome = App.getInstance().login(admin, teacher, student, this);
         } catch (DBError dbe) {
             return "error";
         }
@@ -67,6 +71,10 @@ public class User implements Serializable {
             int month = Calendar.getInstance().get(Calendar.MONTH);
             // TO DO: set actual month in the release
             beginOfTheYear = (month == 5);
+            // quick-and-dirty solution for reseting sureveysActivated
+            if ((month != 5) && (isSurveysActivated() == true)){
+                setSurveysActivated(false);
+            }
             return "start?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wrong username or password", "IGNORED"));
@@ -95,5 +103,12 @@ public class User implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index?faces-redirect=true";
     }
-
+    
+    public String activateSurveys(Nav nav){
+        setSurveysActivated(true);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Surveys activated", "IGNORED"));
+        nav.setPage("/sections/start/admin.xhtml");
+        return "start";
+    }
+    
 }

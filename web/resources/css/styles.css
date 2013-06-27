@@ -58,7 +58,7 @@
 
 #menu {
     background-color: beige;
-    text-align: center;
+    text-align: left;
     font-size: 1.2em;
     font-family: Arial;
     font-weight: bold;
@@ -76,7 +76,11 @@
 }
 
 .menuItem {
-    padding-top: 10px;
+    padding: 5px;
+}
+
+.menuSubItem {
+    padding-left: 25px;
 }
 
 .menuLink{
