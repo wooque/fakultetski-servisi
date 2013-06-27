@@ -3,6 +3,8 @@ package app;
 import com.corejsf.Admin;
 import com.corejsf.Apply;
 import com.corejsf.Course;
+import com.corejsf.Search;
+import com.corejsf.Search.Elem;
 import com.corejsf.Signup;
 import com.corejsf.Student;
 import com.corejsf.Teacher;
@@ -545,6 +547,52 @@ public class App {
             Statement stat = conn.createStatement();
             String query = "delete from Apply where username='"+apply.getUsername()+"' and CourseID='"+apply.getCourseID()+"';";
             stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void searchDemonstrators(Search search) throws DBError{
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            StringBuilder query = new StringBuilder("select u.name, u.surname, u.phone, u.email, s.year, s.gpa from User u, Student s, Demonstrator d "
+                    + "where d.username=u.username and d.username=s.username");
+            if(!search.getName().isEmpty()){
+                query.append(" and u.name='");
+                query.append(search.getName());
+                query.append("'");
+            }
+            if(!search.getSurname().isEmpty()){
+                query.append(" and u.surname='");
+                query.append(search.getSurname());
+                query.append("'");
+            }
+            query.append(" group by d.username;");
+            ResultSet rs = stat.executeQuery(query.toString());
+            LinkedList<Elem> result = new LinkedList<Elem>();
+            while(rs.next()){
+                Elem e = new Elem();
+                User u = new User();
+                Student s = new Student();
+                u.setName(rs.getString("name"));
+                u.setSurname(rs.getString("name"));
+                u.setPhone(rs.getString("phone"));
+                u.setEmail(rs.getString("email"));
+                s.setYear(rs.getInt("year"));
+                s.setGPA(rs.getFloat("gpa"));
+                e.setStudent(s);
+                e.setUser(u);
+                result.add(e);
+            }
+            search.setResult(result);
             stat.close();
         } catch (SQLException ex) {
             DB.getInstance().putConnection(conn);

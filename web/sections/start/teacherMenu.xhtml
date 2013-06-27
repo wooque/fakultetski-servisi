@@ -25,6 +25,7 @@
                     </h:form>
                 </div>
             </ui:repeat>
+            <corejsf:menuItem label="Search" page="/sections/start/search.xhtml" update=":pagecontent"/>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>
