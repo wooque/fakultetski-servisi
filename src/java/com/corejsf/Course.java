@@ -113,4 +113,9 @@ public class Course implements Serializable{
         teacher = null;
         teachers = new LinkedList<Teacher>();
     }
+    
+    @Override
+    public String toString() {
+        return new CourseConverter().getAsString(null, null, this);
+    }
 }

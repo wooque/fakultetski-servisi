@@ -56,3 +56,38 @@ create table Demonstrator(  DemonstratorID INTEGER AUTO_INCREMENT,
                             PRIMARY KEY(DemonstratorID),
                             FOREIGN KEY(CourseID) references Course(CourseID) on update cascade on delete cascade,
                             FOREIGN KEY(username) references User(username) on update cascade on delete cascade);
+
+create table Classroom( ClassroomID INTEGER AUTO_INCREMENT,
+                        location VARCHAR(20),
+                        type VARCHAR(20),
+                        number INTEGER,
+                        PRIMARY KEY(ClassroomID));
+
+create table Lab(       LabID INTEGER AUTO_INCREMENT,
+                        CourseID INTEGER,
+                        name VARCHAR(20),
+                        date DATE,
+                        begin INTEGER,
+                        end INTEGER,
+                        ClassroomID INTEGER,
+                        type INTEGER,
+                        maxDemons INTEGER,
+                        PRIMARY KEY (LabID),
+                        FOREIGN KEY (CourseID) references Course(CourseID) on update cascade on delete cascade,
+                        FOREIGN KEY (ClassroomID) references Classroom(ClassroomID) on update cascade on delete cascade);
+
+create table InvitedDemons( InvitedDemonsID INTEGER AUTO_INCREMENT,
+                            LabID INTEGER,
+                            username VARCHAR(20),
+                            rejected BIT,
+                            commentary VARCHAR(50),
+                            PRIMARY KEY (InvitedDemonsID),
+                            FOREIGN KEY (LabID) references Lab(LabID) on update cascade on delete cascade,
+                            FOREIGN KEY (username) references User(username) on update cascade on delete cascade);
+                            
+create table LabDemons( LabDemonsID INTEGER AUTO_INCREMENT,
+                        LabID INTEGER,
+                        username VARCHAR(20),
+                        PRIMARY KEY (LabDemonsID),
+                        FOREIGN KEY (LabID) references Lab(LabID) on update cascade on delete cascade,
+                        FOREIGN KEY (username) references User(username) on update cascade on delete cascade);

@@ -17,7 +17,7 @@
                                    update=":pagecontent,:pagemenu" styleClass="#{teacher.appliesNum == '0'? 'menuLink': 'menuLinkEmphased'}"/>
                 </h:form>
             </div>
-            <ui:repeat value="#{teacher.courses}" var="c">
+            <ui:repeat value="#{teacher.courses}" var="c" rendered="#{teacher.showCoursesInMenu }">
                 <div class="menuItem, menuSubItem">
                     <h:form>
                         <p:commandLink value="#{c.name}(#{teacher.getCourseApplies(c)})" action="#{teacher.setCurrentCourse(c, nav)}" 
@@ -25,6 +25,12 @@
                     </h:form>
                 </div>
             </ui:repeat>
+            <div class="menuItem">
+                    <h:form>
+                        <p:commandLink value="Labs" action="#{teacher.loadLabs(nav)}" update=":pagecontent" styleClass="menuLink"/>
+                    </h:form>
+                </div>
+            <corejsf:menuItem label="Add lab exercise" page="/sections/start/addLab.xhtml" update=":pagecontent"/>
             <corejsf:menuItem label="Search" page="/sections/start/search.xhtml" update=":pagecontent"/>
             <div class="menuItem">
                 <h:form>

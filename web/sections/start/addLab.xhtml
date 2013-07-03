@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Ignored</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <p>
+                <p:messages globalOnly="true"/>
+            </p>
+            <h:form>
+                <p:panelGrid columns="3" styleClass="lab">
+                    <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
+                    <p:selectOneMenu id="course" value="#{lab.course}" required="true" requiredMessage="#{msgs.codeRequired}">
+                        <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
+                    </p:selectOneMenu>
+                    <p:message for="course"/>
+                    
+                    <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
+                    <p:inputText id="name" value="#{lab.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
+                    <p:message for="name"/>
+                    
+                    <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
+                    <p:calendar id="date" value="#{lab.date}" required="true" requiredMessage="#{msgs.dateRequired}" 
+                                mindate="#{lab.getCurrentDate()}" maxdate="#{lab.getMaxDate()}" pattern="dd/MM/yyyy"/>
+                    <p:message for="date"/>
+
+                    <h:outputText value="#{msgs.beginPrompt}" styleClass="emphasis"/>
+                    <p:selectOneMenu id="begin" value="#{lab.beginHour}" required="true" requiredMessage="#{msgs.beginRequired}">
+                        <f:selectItems value="#{lab.begin}"/>
+                        <p:ajax event="change" listener="#{lab.changeEnd}" update="end"/>
+                    </p:selectOneMenu>
+                    <p:message for="begin"/>
+
+                    <h:outputText value="#{msgs.endPrompt}" styleClass="emphasis"/>
+                    <p:selectOneMenu id="end" value="#{lab.endHour}" required="true" requiredMessage="#{msgs.endRequired}">
+                        <f:selectItems value="#{lab.end}"/>
+                    </p:selectOneMenu>
+                    <p:message for="end"/>
+                    
+                    <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
+                    <p:autoComplete id="class" value="#{lab.classroom}" required="true" requiredMessage="#{msgs.classroomRequired}" 
+                                    completeMethod="#{lab.completeClassroom}" var="c" itemLabel="#{c.location} - #{c.type} #{c.number}" itemValue="#{c}"/>
+                    <p:message for="class"/>
+                    
+                    <h:outputText value="#{msgs.typePrompt}" styleClass="emphasis"/>
+                    <p:selectOneMenu id="type" value="#{lab.type}" required="true" requiredMessage="#{msgs.typeRequired}">
+                        <f:selectItems value="#{lab.types}"/>
+                    </p:selectOneMenu>
+                    <p:message for="type"/>
+                    
+                    <h:outputText value="#{msgs.maxDemonstratorsPrompt}" styleClass="emphasis"/>
+                    <p:inputText id="max" value="#{lab.maxDemonstrators}" required="true" requiredMessage="#{msgs.maxDemonstratorsRequired}"/>
+                    <p:message for="max"/>
+                </p:panelGrid>
+                <p>
+                    <p:commandButton value="#{msgs.addDemonstratorsButtonText}" action="#{lab.addDemonstrators(nav)}" process="@form" update=":pagecontent"/>
+                </p>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

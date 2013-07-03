@@ -2,40 +2,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
-    <h:head>
-        <title>
-            <ui:insert name="windowTitle">
-                Default Title
-            </ui:insert>
-        </title>
-        <h:outputStylesheet library="css" name="styles.css"/>
-    </h:head>
-    <h:body style="background-color: snow">
-        <div id="header">
-            <ui:insert name="header">
-                College services
-            </ui:insert>
-        </div>
-        <div id="menu">
-            <h:panelGroup id="pagemenu">
-                <ui:insert name="menu">
-                    Default menu
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <title>
+                <ui:insert name="windowTitle">
+                    Default Title
                 </ui:insert>
-            </h:panelGroup>
-        </div>
-        <div id="content">
-            <h:panelGroup id="pagecontent">
-                <ui:insert name="content">
-                    Default content
+            </title>
+            <h:outputStylesheet library="css" name="styles.css"/>
+        </h:head>
+        <h:body style="background-color: snow">
+            <div id="header">
+                <ui:insert name="header">
+                    College services
                 </ui:insert>
-            </h:panelGroup>
-        </div>
-        <div id="footer">
-            <ui:insert name="footer">
-                Vuk Mirovic © 2013
-            </ui:insert>
-        </div>
-    </h:body>
+            </div>
+            <div id="menu">
+                <h:panelGroup id="pagemenu">
+                    <ui:insert name="menu">
+                        Default menu
+                    </ui:insert>
+                </h:panelGroup>
+            </div>
+            <div id="content">
+                <h:panelGroup id="pagecontent">
+                    <ui:insert name="content">
+                        Default content
+                    </ui:insert>
+                </h:panelGroup>
+            </div>
+            <div id="footer">
+                <ui:insert name="footer">
+                    Vuk Mirovic © 2013
+                </ui:insert>
+            </div>
+        </h:body>
+    </f:view>
 </html>
 

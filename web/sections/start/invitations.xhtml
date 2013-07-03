@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Ignored</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form id="invform">
+                <p:dataTable id="invs" value="#{student.invitations}" var="l">
+                    <p:column headerText="#{msgs.coursePrompt}">
+                        #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                    </p:column>
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{l.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.datePrompt}">
+                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.durationPrompt}">
+                        #{l.beginHour} - #{l.endHour}h
+                    </p:column>
+                    <p:column headerText="#{msgs.classroomPrompt}">
+                        #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
+                    </p:column>
+                    <p:column headerText="#{msgs.typePrompt}">
+                        #{l.typeString}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.acceptInvitation}" action="#{student.acceptLab(user.username,l)}" process="@form" update=":pagecontent,:pagemenu"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.rejectInvitation}" action="#{student.setCurrLab(l)}" onclick="dlg.show();"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <p:dialog id="md" header="#{msgs.typeCause}" widgetVar="dlg" modal="true" closable="false">  
+                <h:form>
+                    <p:inputText id="cause" value="#{student.rejectedComment}" required="true" requiredMessage="#{msgs.causeRequired}"/> 
+                    <p></p>
+                    <p:message id="causemsg" for="cause"/>
+                    <p></p>
+                    <p:commandButton value="#{msgs.rejectInvitation}" action="#{student.rejectLab(user.username)}" process="@form" update="causemsg,:invform:invs,:accepted,:pagemenu"/>
+                </h:form>
+            </p:dialog>
+            <p></p>
+            <p:dataTable id="accepted" value="#{student.acceptedInvitations}" var="l">
+                <f:facet name="header">
+                    #{msgs.acceptedInvitations}
+                </f:facet>
+                <p:column headerText="#{msgs.coursePrompt}">
+                    #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                </p:column>
+                <p:column headerText="#{msgs.namePrompt}">
+                    #{l.name}
+                </p:column>
+                <p:column headerText="#{msgs.datePrompt}">
+                    <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                </p:column>
+                <p:column headerText="#{msgs.durationPrompt}">
+                    #{l.beginHour} - #{l.endHour}h
+                </p:column>
+            </p:dataTable>
+        </ui:composition>
+    </h:body>
+</html>
+

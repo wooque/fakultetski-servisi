@@ -18,6 +18,15 @@
                     </h:form>
                 </div>
             </h:panelGroup>
+            <h:panelGroup rendered="#{not empty student.invitations}">
+                <div class="menuItem">
+                    <h:form>
+                        <p:commandLink id="invitations" value="Invitations(#{student.invitations.size()})" 
+                                       action="#{nav.setPage('/sections/start/invitations.xhtml')}" 
+                                       update=":pagecontent" styleClass="#{student.invitations.size() == '0'? 'menuLink': 'menuLinkEmphased'}"/>
+                    </h:form>
+                </div>
+            </h:panelGroup>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>

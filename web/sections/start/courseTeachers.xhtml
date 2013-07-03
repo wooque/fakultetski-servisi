@@ -33,7 +33,7 @@
                 </p:dataTable>
                 <p></p>
                 <p:autoComplete id="teacherauto" value="#{course.teacher}" completeMethod="#{teacher.completeTeacher}" var="t" 
-                                itemLabel="#{t.name} #{t.surname} (#{t.username})" itemValue="#{t}" forceSelection="true"/>
+                                itemLabel="#{t}" itemValue="#{t}" forceSelection="true"/>
                 &nbsp;
                 <p:commandButton value="#{msgs.addTeacher}" action="#{course.addTeacher}" process="@form" update="teacherstable,teacherauto,allmsg"/>
                 <p></p>

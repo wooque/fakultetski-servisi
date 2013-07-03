@@ -21,7 +21,7 @@
                     <p:column>
                         <p:selectBooleanCheckbox value="#{c.selected}"/>
                         <f:facet name="footer">
-                            <p:commandButton value="#{msgs.applyPrompt}" action="#{student.apply(user, nav)}"  process="@form" update=":pagecontent"/>
+                            <p:commandButton value="#{msgs.applyPrompt}" action="#{student.apply(user, nav)}"  process="@form" update=":pagecontent,:pagemenu"/>
                         </f:facet>
                     </p:column>
                 </p:dataTable>

@@ -1,5 +1,6 @@
 package com.corejsf;
 
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -13,24 +14,23 @@ public class CourseConverter implements Converter{
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         StringTokenizer tokenizer = new StringTokenizer(value, "-");
         String token;
-        Course course = new Course();
+        String department;
+        Integer teachingYear;
+        String code;
         if(tokenizer.hasMoreTokens()){
             token = tokenizer.nextToken().trim();
-            course.setDepartment(token.substring(0, 2));
-            course.setTeachingYear(Integer.parseInt(token.substring(2, 3)));
-            course.setCode(token.substring(3, token.length()));
+            department = token.substring(0, 2);
+            teachingYear = Integer.parseInt(token.substring(2, 3));
+            code = token.substring(3, token.length());
+            Teacher teacher  = (Teacher)context.getApplication().evaluateExpressionGet(context, "#{teacher}", Teacher.class);
+            LinkedList<Course> courses = teacher.getCourses();
+            for(Course course: courses){
+                if(course.getDepartment().equals(department) && course.getTeachingYear() == teachingYear && course.getCode().equals(code)){
+                    return course;
+                }
+            }
         }
-        if(tokenizer.hasMoreTokens()){
-            course.setName(tokenizer.nextToken().trim());
-        }
-        if(tokenizer.hasMoreTokens()){
-            course.setSemester(tokenizer.nextToken().trim());
-        }
-        if(tokenizer.hasMoreTokens()){
-            token = tokenizer.nextToken().substring(1, 5);
-            course.setYear(Integer.parseInt(token));
-        }
-        return course;
+        return null;
     }
 
     @Override

@@ -30,6 +30,10 @@
     border-style: none;
 }
 
+.ui-panelgrid.lab td, .ui-panelgrid.lab tr {
+    border-style: none;
+}
+
 .signup {
     margin-left: 200px;
     width: 800px;

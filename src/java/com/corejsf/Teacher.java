@@ -5,8 +5,10 @@ import db.DBError;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 @SessionScoped
 @ManagedBean(name = "teacher")
@@ -18,6 +20,9 @@ public class Teacher implements Serializable{
     private LinkedList<Course> courses;
     private Course currentCourse;
     private LinkedList<LinkedList<Apply>> applies;
+    private boolean showCoursesInMenu;
+    private LinkedList<Lab> labs;
+    private Lab currlab;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -29,16 +34,27 @@ public class Teacher implements Serializable{
     public void setSurname(String surname) { this.surname = surname; }
     
     public LinkedList<Course> getCourses() { return courses; }
-    public void setCourses(LinkedList<Course> courses) { this.courses = courses; }
+    public void setCourses(LinkedList<Course> courses) { 
+        this.courses = courses;
+    }
 
     public LinkedList<LinkedList<Apply>> getApplies() { return applies; }
     public void setApplies(LinkedList<LinkedList<Apply>> applies) { this.applies = applies; }
+    
+    public boolean isShowCoursesInMenu() { return showCoursesInMenu; }
+    public void setShowCoursesInMenu(boolean showCoursesInMenu) { this.showCoursesInMenu = showCoursesInMenu; }
     
     public Course getCurrentCourse() { return currentCourse; }
     public void setCurrentCourse(Course currentCourse, Nav nav) { 
         this.currentCourse = currentCourse; 
         nav.setPage("/sections/start/applies.xhtml");
     }
+    
+    public LinkedList<Lab> getLabs() { return labs; }
+    public void setLabs(LinkedList<Lab> labs) { this.labs = labs; }
+    
+    public Lab getCurrlab() { return currlab; }
+    public void setCurrlab(Lab currlab) { this.currlab = currlab; }
     
     public String getAppliesNum(){
         int num = 0;
@@ -77,6 +93,7 @@ public class Teacher implements Serializable{
         } catch (DBError dbe){
             return "error";
         }
+        showCoursesInMenu = !showCoursesInMenu;
         nav.setPage("/sections/start/appliesStart.xhtml");
         return "start";
     }
@@ -95,6 +112,44 @@ public class Teacher implements Serializable{
             App.getInstance().reject(apply);
         } catch (DBError dbe) {
         }
+    }
+    
+    public String saveLab(Lab lab, Nav nav){
+        boolean outcome;
+        try {
+             outcome = App.getInstance().saveLab(lab);
+        } catch (DBError dbe){
+            return "error";
+        }
+        if(outcome){
+            nav.setPage("/sections/start/labs.xhtml");
+            labs.add(lab);
+        } else {
+            nav.setPage("/sections/start/addLab.xhtml");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Lab practice already exist", "IGNORED"));
+        }
+        return "start";
+    }
+
+    
+    public void showLab(Lab lab, Nav nav) {
+        currlab = lab;
+        nav.setPage("/sections/start/labInfo.xhtml");
+    }
+    
+    public String loadLabs(Nav nav) {
+        try{
+            App.getInstance().loadLabs(this);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        nav.setPage("/sections/start/labs.xhtml");
+        return "start";
+    }
+    
+    @Override
+    public String toString() {
+        return new TeacherConverter().getAsString(null, null, this);
     }
     
     @Override

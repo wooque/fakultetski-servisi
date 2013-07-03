@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Ignored</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <p:panelGrid columns="2" styleClass="lab">
+                <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
+                <h:outputText value="#{teacher.currlab.course}"/>
+
+                <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
+                <h:outputText value="#{teacher.currlab.name}"/>
+
+                <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
+                <p:calendar value="#{teacher.currlab.date}" readonly="true" pattern="dd/MM/yyyy"/>
+
+                <h:outputText value="#{msgs.durationPrompt}" styleClass="emphasis"/>
+                #{teacher.currlab.beginHour} - #{teacher.currlab.endHour}h
+
+                <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
+                <h:outputText value="#{teacher.currlab.classroom}"/>
+
+                <h:outputText value="#{msgs.typePrompt}" styleClass="emphasis"/>
+                <h:outputText value="#{teacher.currlab.typeString}"/>
+            </p:panelGrid>
+            <p></p>
+            <p:dataTable value="#{teacher.currlab.workingDemonstrators}" var="d" rendered="#{not empty teacher.currlab.workingDemonstrators}">
+                <p:column headerText="#{msgs.namePrompt}">
+                    #{d.user.name}
+                </p:column>
+                <p:column headerText="#{msgs.surnamePrompt}">
+                    #{d.user.surname}
+                </p:column>
+                <p:column headerText="#{msgs.usernamePrompt}">
+                    #{d.user.username}
+                </p:column>
+                <p:column headerText="#{msgs.yearPrompt}">
+                    #{d.student.year}
+                </p:column>
+                <p:column headerText="#{msgs.GPAPrompt}">
+                    #{d.student.GPA}
+                </p:column>
+                <p:column headerText="#{msgs.rejectInvitation}">
+                    <p:selectBooleanCheckbox value="#{d.rejected}" disabled="true"/>
+                </p:column>
+                <p:column headerText="#{msgs.commentaryPrompt}">
+                    #{d.student.rejectedComment}
+                </p:column>
+            </p:dataTable>
+            <p>
+                <p:commandButton value="Back" action="#{nav.setPage('/sections/start/labs.xhtml')}" update=":pagecontent"/>
+            </p>
+        </ui:composition>
+    </h:body>
+</html>
+
