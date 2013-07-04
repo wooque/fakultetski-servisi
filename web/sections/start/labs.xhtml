@@ -10,7 +10,11 @@
     <h:body>
         <ui:composition>
             <h:form>
-                <p:dataTable value="#{teacher.labs}" var="l">
+                <p:panel>
+                    <h:outputText value="#{msgs.futureLabsText}" styleClass="emphasis"/>
+                </p:panel>
+                <p></p>
+                <p:dataTable value="#{teacher.futureLabs}" var="l">
                     <p:column headerText="#{msgs.coursePrompt}">
                         #{l.course.department}#{l.course.teachingYear}#{l.course.code}
                     </p:column>
@@ -33,6 +37,37 @@
                         <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
                     </p:column>
                 </p:dataTable>
+                <p></p>
+                <p:panel>
+                    <h:outputText value="#{msgs.pastLabsText}" styleClass="emphasis"/>
+                </p:panel>
+                <p></p>
+                <p:dataTable value="#{teacher.pastLabs}" var="l">
+                    <p:column headerText="#{msgs.coursePrompt}">
+                        #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                    </p:column>
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{l.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.datePrompt}">
+                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.durationPrompt}">
+                        #{l.beginHour} - #{l.endHour}h
+                    </p:column>
+                    <p:column headerText="#{msgs.classroomPrompt}">
+                        #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
+                    </p:column>
+                    <p:column headerText="#{msgs.typePrompt}">
+                        #{l.typeString}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
+                    </p:column>
+                </p:dataTable>
+                <p>
+                    <p:commandButton value="#{msgs.closedLabs}" action="#{nav.setPage('/sections/start/closedLabs.xhtml')}" update=":pagecontent"/>
+                </p>
             </h:form>
         </ui:composition>
     </h:body>

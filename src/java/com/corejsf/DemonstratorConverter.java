@@ -8,7 +8,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 @FacesConverter("demonstrator")
-public class UserConverter implements Converter{
+public class DemonstratorConverter implements Converter{
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -19,10 +19,10 @@ public class UserConverter implements Converter{
         }
         if(tokenizer.hasMoreTokens()){
             username = tokenizer.nextToken("()");
-            Lab lab = (Lab)context.getApplication().evaluateExpressionGet(context, "#{lab}", Lab.class);
-            LinkedList<User> demonstrators = lab.getDemonstrators();
-            for(User demonstrator: demonstrators){
-                if(demonstrator.getUsername().equals(username)){
+            Lab lab = (Lab)context.getApplication().evaluateExpressionGet(context, "#{teacher.currlab}", Lab.class);
+            LinkedList<Demonstrator> demonstrators = lab.getDemonstrators();
+            for(Demonstrator demonstrator: demonstrators){
+                if(demonstrator.getUser().getUsername().equals(username)){
                     return demonstrator;
                 }
             }
@@ -33,12 +33,12 @@ public class UserConverter implements Converter{
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         StringBuilder builder = new StringBuilder();
-        User user = (User)value;
-        builder.append(user.getName());
+        Demonstrator demonstrator = (Demonstrator)value;
+        builder.append(demonstrator.getUser().getName());
         builder.append(" ");
-        builder.append(user.getSurname());
+        builder.append(demonstrator.getUser().getSurname());
         builder.append(" (");
-        builder.append(user.getUsername());
+        builder.append(demonstrator.getUser().getUsername());
         builder.append(")");
         return builder.toString();
     }

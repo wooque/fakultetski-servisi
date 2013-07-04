@@ -72,6 +72,7 @@ create table Lab(       LabID INTEGER AUTO_INCREMENT,
                         ClassroomID INTEGER,
                         type INTEGER,
                         maxDemons INTEGER,
+                        closed BIT,
                         PRIMARY KEY (LabID),
                         FOREIGN KEY (CourseID) references Course(CourseID) on update cascade on delete cascade,
                         FOREIGN KEY (ClassroomID) references Classroom(ClassroomID) on update cascade on delete cascade);

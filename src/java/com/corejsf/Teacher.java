@@ -116,6 +116,13 @@ public class Teacher implements Serializable{
     
     public String saveLab(Lab lab, Nav nav){
         boolean outcome;
+        if(labs == null){
+            try{
+                App.getInstance().loadLabs(this);
+            } catch (DBError dbe) {
+                return "error";
+            }
+        }
         try {
              outcome = App.getInstance().saveLab(lab);
         } catch (DBError dbe){
@@ -131,6 +138,16 @@ public class Teacher implements Serializable{
         return "start";
     }
 
+    public String closeLab(Nav nav) {
+        currlab.closeLab();
+        try {
+             App.getInstance().closeLab(currlab);
+        } catch (DBError dbe){
+            return "error";
+        }
+        nav.setPage("/sections/start/labs.xhtml");
+        return "start";
+    }
     
     public void showLab(Lab lab, Nav nav) {
         currlab = lab;
@@ -145,6 +162,36 @@ public class Teacher implements Serializable{
         }
         nav.setPage("/sections/start/labs.xhtml");
         return "start";
+    }
+    
+    public LinkedList<Lab> getFutureLabs() {
+        LinkedList<Lab> future = new LinkedList<Lab>();
+        for(Lab lab: labs){
+            if(!lab.isPast() && !lab.isClosed()){
+                future.add(lab);
+            }
+        }
+        return future;
+    }
+    
+    public LinkedList<Lab> getPastLabs() {
+        LinkedList<Lab> past = new LinkedList<Lab>();
+        for(Lab lab: labs){
+            if(lab.isPast() && !lab.isClosed()){
+                past.add(lab);
+            }
+        }
+        return past;
+    }
+    
+    public LinkedList<Lab> getClosedLabs() {
+        LinkedList<Lab> closed = new LinkedList<Lab>();
+        for(Lab lab: labs){
+            if(lab.isClosed()){
+                closed.add(lab);
+            }
+        }
+        return closed;
     }
     
     @Override

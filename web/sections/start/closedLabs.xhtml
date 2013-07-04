@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:dataTable value="#{teacher.closedLabs}" var="l">
+                    <p:column headerText="#{msgs.coursePrompt}">
+                        #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                    </p:column>
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{l.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.datePrompt}">
+                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.durationPrompt}">
+                        #{l.beginHour} - #{l.endHour}h
+                    </p:column>
+                    <p:column headerText="#{msgs.classroomPrompt}">
+                        #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
+                    </p:column>
+                    <p:column headerText="#{msgs.typePrompt}">
+                        #{l.typeString}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
+                    </p:column>
+                </p:dataTable>
+                <p></p>
+                <p:column>
+                    <p:commandButton value="Other labs" action="#{nav.setPage('/sections/start/labs.xhtml')}" update=":pagecontent"/>
+                </p:column>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

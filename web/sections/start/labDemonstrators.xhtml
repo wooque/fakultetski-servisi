@@ -13,13 +13,13 @@
             <h:form>
                 <p:dataTable id="demons" value="#{lab.selectedDemonstrators}" var="d" rendered="#{not empty lab.selectedDemonstrators}">
                     <p:column headerText="#{msgs.namePrompt}">
-                        #{d.name}
+                        #{d.user.name}
                     </p:column>
                     <p:column headerText="#{msgs.surnamePrompt}">
-                        #{d.surname}
+                        #{d.user.surname}
                     </p:column>
                     <p:column headerText="#{msgs.usernamePrompt}">
-                        #{d.username}
+                        #{d.user.username}
                     </p:column>
                 </p:dataTable>
                 <p>
@@ -27,7 +27,7 @@
                 </p>
                 <p>
                     <p:selectOneMenu id="demonstrator" value="#{lab.demonstrator}" converter="demonstrator">
-                        <f:selectItems value="#{lab.demonstrators}" var="d" itemLabel="#{d.name} #{d.surname} (#{d.username})" itemValue="#{d}"/>
+                        <f:selectItems value="#{lab.demonstrators}" var="d" itemLabel="#{d.user.name} #{d.user.surname} (#{d.user.username})" itemValue="#{d}"/>
                     </p:selectOneMenu>
                 </p>
                 <p:commandButton value="#{msgs.addUserText}" action="#{lab.addDemonstrator()}" process="@form" update=":pagecontent"/>

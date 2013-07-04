@@ -3,33 +3,50 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>Ignored</title>
     </h:head>
     <h:body>
         <ui:composition>
-            <p:panelGrid columns="2" styleClass="lab">
-                <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
-                <h:outputText value="#{teacher.currlab.course}"/>
+            <h:form>
+                <h:panelGroup rendered="#{teacher.currlab.past and not teacher.currlab.closed}">
+                    <p>
+                        <p:commandButton value="#{msgs.closeLab}" action="#{teacher.closeLab(nav)}" process="@form" update=":pagecontent"/>
+                    </p>
+                </h:panelGroup>
+                <p></p>
+                <p:panelGrid columns="2" styleClass="lab">
+                    <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{teacher.currlab.course}"/>
 
-                <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
-                <h:outputText value="#{teacher.currlab.name}"/>
+                    <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{teacher.currlab.name}"/>
 
-                <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
-                <p:calendar value="#{teacher.currlab.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
+                    <p:calendar value="#{teacher.currlab.date}" readonly="true" pattern="dd/MM/yyyy"/>
 
-                <h:outputText value="#{msgs.durationPrompt}" styleClass="emphasis"/>
-                #{teacher.currlab.beginHour} - #{teacher.currlab.endHour}h
+                    <h:outputText value="#{msgs.durationPrompt}" styleClass="emphasis"/>
+                    <h:panelGroup>
+                        <h:panelGroup rendered="#{not teacher.currlab.past}">
+                            #{teacher.currlab.beginHour} - #{teacher.currlab.endHour}h
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{teacher.currlab.past}">
+                            #{teacher.currlab.beginHour} - <p:selectOneMenu id="end" value="#{teacher.currlab.endHour}">
+                                                                <f:selectItems value="#{teacher.currlab.end}"/>
+                                                            </p:selectOneMenu> h
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{teacher.currlab.classroom}"/>
 
-                <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
-                <h:outputText value="#{teacher.currlab.classroom}"/>
-
-                <h:outputText value="#{msgs.typePrompt}" styleClass="emphasis"/>
-                <h:outputText value="#{teacher.currlab.typeString}"/>
-            </p:panelGrid>
+                    <h:outputText value="#{msgs.typePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{teacher.currlab.typeString}"/>
+                </p:panelGrid>
+            </h:form>
             <p></p>
-            <p:dataTable value="#{teacher.currlab.workingDemonstrators}" var="d" rendered="#{not empty teacher.currlab.workingDemonstrators}">
+            <p:dataTable id="demons" value="#{teacher.currlab.workingDemonstrators}" var="d" rendered="#{not empty teacher.currlab.workingDemonstrators}">
                 <p:column headerText="#{msgs.namePrompt}">
                     #{d.user.name}
                 </p:column>
@@ -51,10 +68,31 @@
                 <p:column headerText="#{msgs.commentaryPrompt}">
                     #{d.student.rejectedComment}
                 </p:column>
+                <p:column rendered="#{teacher.currlab.past and not teacher.currlab.closed}">
+                    <p:commandButton value="#{msgs.removeDemonstrator}" action="#{teacher.currlab.removeDemonstrator(d)}" update=":pagecontent"/>
+                </p:column>
             </p:dataTable>
             <p>
-                <p:commandButton value="Back" action="#{nav.setPage('/sections/start/labs.xhtml')}" update=":pagecontent"/>
+                <p:messages id="allmsg" globalOnly="true"/>
             </p>
+            <h:form>
+                <h:panelGroup rendered="#{teacher.currlab.past and not teacher.currlab.closed}">
+                    <h:panelGroup rendered="#{not empty teacher.currlab.demonstrators}">
+                        <p>
+                            <p:selectOneMenu id="demonstrator" value="#{teacher.currlab.demonstrator}" converter="demonstrator">
+                                <f:selectItems value="#{teacher.currlab.demonstrators}" var="d" itemLabel="#{d.user.name} #{d.user.surname} (#{d.user.username})" itemValue="#{d}"/>
+                            </p:selectOneMenu>
+                        </p>
+                        <p:commandButton value="#{msgs.addUserText}" action="#{teacher.currlab.addWorkingDemonstrator()}" process="@form" update=":pagecontent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <p>
+                    <p:commandButton value="#{msgs.removeDemonstrators}" action="#{teacher.currlab.removeDemonstrators()}" update=":pagecontent" rendered="#{teacher.currlab.thereIsRejected()}"/>
+                </p>
+                <p>
+                    <p:commandButton value="Back" action="#{nav.setPage(teacher.currlab.closed ? '/sections/start/closedLabs.xhtml': '/sections/start/labs.xhtml')}" update=":pagecontent"/>
+                </p>
+            </h:form>
         </ui:composition>
     </h:body>
 </html>

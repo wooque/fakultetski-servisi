@@ -95,7 +95,7 @@ public class App {
                         }
                         if(numOfAccepted == maxDemons)
                             continue;
-                        query = "select l.name as labname, l.date, l.begin, l.end, l.type as labtype, "
+                        query = "select l.name as labname, l.date, l.begin, l.end, l.type as labtype, l.closed, "
                                 + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number , "
                                 + "c.CourseID, c.department, c.teachyear, c.code, c.name as coursename"
                                 + "  from Lab l, Classroom cr, Course c where l.LabID='"+labID
@@ -104,6 +104,7 @@ public class App {
                         Lab lab = new Lab();
                         Classroom cs = new Classroom();
                         Course course = new Course();
+                        long today = Calendar.getInstance().getTimeInMillis();
                         if(rs.next()){
                             cs.setId(rs.getInt("ClassroomID"));
                             cs.setLocation(rs.getString("location"));
@@ -122,7 +123,11 @@ public class App {
                             lab.setDate(new java.util.Date(dat.getTime()));
                             lab.setBeginHour(rs.getInt("begin"));
                             lab.setEndHour(rs.getInt("end"));
+                            if(dat.getTime() +  lab.getEndHour() * 3600 * 1000 < today){
+                                lab.setPast(true);
+                            }
                             lab.setType(rs.getInt("labtype"));
+                            lab.setClosed(rs.getInt("closed") == 1? true: false);
                         }
                         labs.add(lab);
                     }
@@ -740,8 +745,7 @@ public class App {
             Statement stat = conn.createStatement();
             String query = "select * from Demonstrator d, User u, Student s where d.username=u.username and d.username=s.username and d.CourseID='"+lab.getCourse().getId()+"';";
             ResultSet rs = stat.executeQuery(query);
-            LinkedList<User> users = new LinkedList<User>();
-            LinkedList<Student> students = new LinkedList<Student>();
+            LinkedList<Demonstrator> demons = new LinkedList<Demonstrator>();
             while(rs.next()){
                 User user= new User();
                 Student student = new Student();
@@ -753,11 +757,12 @@ public class App {
                 student.setDepartment(rs.getString("department"));
                 student.setYear(rs.getInt("year"));
                 student.setGPA(rs.getFloat("gpa"));
-                users.add(user);
-                students.add(student);
+                Demonstrator demonstrator = new Demonstrator();
+                demonstrator.setUser(user);
+                demonstrator.setStudent(student);
+                demons.add(demonstrator);
             }
-            lab.setDemonstrators(users);
-            lab.setDemonstratorsInfo(students);
+            lab.setDemonstrators(demons);
             stat.close();
         } catch (SQLException ex) {
             DB.getInstance().putConnection(conn);
@@ -795,8 +800,8 @@ public class App {
                 DB.getInstance().putConnection(conn);
                 throw new DBError();
             }
-            for(User demonstrator: lab.getSelectedDemonstrators()){
-                query = "insert into InvitedDemons (LabID, username) values ('"+labID+"','"+demonstrator.getUsername()+"');";
+            for(Demonstrator demonstrator: lab.getSelectedDemonstrators()){
+                query = "insert into InvitedDemons (LabID, username) values ('"+labID+"','"+demonstrator.getUser().getUsername()+"');";
                 stat.executeUpdate(query);
             }
             stat.close();
@@ -856,10 +861,11 @@ public class App {
             Statement stat = conn.createStatement();
             LinkedList<Lab> labs = new LinkedList<Lab>();
             for(Course course: teacher.getCourses()){
-                String query = "select l.LabID, l.name as labname, l.date, l.begin, l.end, l.type as labtype, "
+                String query = "select l.LabID, l.name as labname, l.date, l.begin, l.end, l.type as labtype, l.closed, "
                         + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number "
                         + "from Lab l, Classroom cr where l.ClassroomID=cr.ClassroomID and l.CourseID='"+course.getId()+"';";
                 ResultSet rs = stat.executeQuery(query);
+                long today = Calendar.getInstance().getTimeInMillis();
                 while(rs.next()){
                     Lab lab = new Lab();
                     Classroom cs = new Classroom();
@@ -871,17 +877,22 @@ public class App {
                     lab.setId(rs.getInt("LabID"));
                     lab.setCourse(course);
                     lab.setName(rs.getString("labname"));
-                    Date dat = rs.getDate("date");
-                    lab.setDate(new java.util.Date(dat.getTime()));
+                    Date date = rs.getDate("date");
+                    lab.setDate(new java.util.Date(date.getTime()));
                     lab.setBeginHour(rs.getInt("begin"));
                     lab.setEndHour(rs.getInt("end"));
+                    if(date.getTime() +  lab.getEndHour() * 3600 * 1000 < today){
+                        lab.setPast(true);
+                    }
                     lab.setType(rs.getInt("labtype"));
+                    lab.setClosed(rs.getInt("closed") == 1? true: false);
                     Statement statTemp = conn.createStatement();
                     query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department "
                             + "from User u, Student s, LabDemons ld "
                             + "where ld.LabID='"+lab.getId()+"' and ld.username=u.username and s.username=u.username;";
                     ResultSet rsTemp = statTemp.executeQuery(query);
                     LinkedList<Demonstrator> demonstrators = new LinkedList<Demonstrator>();
+                    LinkedList<Demonstrator> workingDemonstrators = new LinkedList<Demonstrator>();
                     while(rsTemp.next()){
                         Demonstrator demonstrator = new Demonstrator();
                         User user = new User();
@@ -894,7 +905,7 @@ public class App {
                         student.setGPA(rsTemp.getFloat("gpa"));
                         demonstrator.setStudent(student);
                         demonstrator.setUser(user);
-                        demonstrators.add(demonstrator);
+                        workingDemonstrators.add(demonstrator);
                     }
                     query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department, id.rejected, id.commentary "
                             + "from User u, Student s, InvitedDemons id "
@@ -914,14 +925,107 @@ public class App {
                         demonstrator.setStudent(student);
                         demonstrator.setUser(user);
                         demonstrator.setRejected(rsTemp.getInt("rejected") == 1? true: false);
+                        workingDemonstrators.add(demonstrator);
+                    }
+                    query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department "
+                            + "from User u, Student s, Demonstrator d "
+                            + "where d.CourseID='"+lab.getCourse().getId()+"' and d.username=u.username and s.username=u.username;";
+                    rsTemp = statTemp.executeQuery(query);
+                    while(rsTemp.next()){
+                        Demonstrator demonstrator = new Demonstrator();
+                        User user = new User();
+                        user.setName(rsTemp.getString("name"));
+                        user.setSurname(rsTemp.getString("surname"));
+                        user.setUsername(rsTemp.getString("username"));
+                        Student student = new Student();
+                        student.setDepartment(rsTemp.getString("department"));
+                        student.setYear(rsTemp.getInt("year"));
+                        student.setGPA(rsTemp.getFloat("gpa"));
+                        demonstrator.setStudent(student);
+                        demonstrator.setUser(user);
                         demonstrators.add(demonstrator);
                     }
-                    lab.setWorkingDemonstrators(demonstrators);
+                    lab.setDemonstrators(demonstrators);
+                    lab.setWorkingDemonstrators(workingDemonstrators);
                     labs.add(lab);
                     statTemp.close();
                 } 
             }
             teacher.setLabs(labs);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void removeDemonstrator(Lab l, Demonstrator d) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "delete from InvitedDemons where LabID='"+l.getId()+"' and username='"+d.getUser().getUsername()+"';";
+            stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void removeDemonstratorFromLab(Lab l, Demonstrator d) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "delete from LabDemons where LabID='"+l.getId()+"' and username='"+d.getUser().getUsername()+"';";
+            stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void addWorkingDemonstrator(Lab lab, Demonstrator demonstrator) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "insert into LabDemons (LabID, username) values ('"+lab.getId()+"','"+demonstrator.getUser().getUsername()+"');";
+            stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void closeLab(Lab lab) throws DBError{
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "update Lab set end='"+lab.getEndHour()+"' where LabID='"+lab.getId()+"';";
+            stat.executeUpdate(query);
+            query = "update Lab set closed=1 where LabID='"+lab.getId()+"';";
+            stat.executeUpdate(query);
             stat.close();
         } catch (SQLException ex) {
             DB.getInstance().putConnection(conn);

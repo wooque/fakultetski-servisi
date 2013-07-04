@@ -16,6 +16,8 @@ import javax.faces.model.SelectItem;
 @ManagedBean(name = "lab")
 public class Lab implements Serializable{
     
+    private boolean past;
+    private boolean closed;
     private Integer id;
     private Course course;
     private String name;
@@ -25,11 +27,10 @@ public class Lab implements Serializable{
     private Classroom classroom;
     private Integer type;
     private Integer maxDemonstrators;
-    private LinkedList<User> demonstrators;
-    private LinkedList<Student> demonstratorsInfo;
-    private LinkedList<User> selectedDemonstrators = new LinkedList<User>();
+    private LinkedList<Demonstrator> demonstrators;
+    private LinkedList<Demonstrator> selectedDemonstrators = new LinkedList<Demonstrator>();
     private LinkedList<Demonstrator> workingDemonstrators;
-    private User demonstrator;
+    private Demonstrator demonstrator;
     private static SelectItem[] begin;
     private static SelectItem[] end;
     public static final SelectItem[] types = {new SelectItem(1, "Duty hours"),
@@ -49,9 +50,15 @@ public class Lab implements Serializable{
     public SelectItem[] getBegin() { return begin; }
     public SelectItem[] getEnd() { return end; }
     public SelectItem[] getTypes() { return types; }
-
+    
+    public boolean isPast() { return past; }
+    public void setPast(boolean past) { this.past = past; }
+    
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
+    
+    public boolean isClosed() { return closed; }
+    public void setClosed(boolean closed) { this.closed = closed; }
     
     public Course getCourse() { return course; }
     public void setCourse(Course course) { this.course = course; }
@@ -95,17 +102,14 @@ public class Lab implements Serializable{
     public Integer getMaxDemonstrators() { return maxDemonstrators; }
     public void setMaxDemonstrators(Integer maxDemonstrators) { this.maxDemonstrators = maxDemonstrators; }
 
-    public LinkedList<User> getDemonstrators() { return demonstrators; }
-    public void setDemonstrators(LinkedList<User> demonstrators) { this.demonstrators = demonstrators; }
+    public LinkedList<Demonstrator> getDemonstrators() { return demonstrators; }
+    public void setDemonstrators(LinkedList<Demonstrator> demonstrators) { this.demonstrators = demonstrators; }
     
-    public LinkedList<Student> getDemonstratorsInfo() { return demonstratorsInfo; }
-    public void setDemonstratorsInfo(LinkedList<Student> demonstratorsInfo) { this.demonstratorsInfo = demonstratorsInfo; }
-    
-    public LinkedList<User> getSelectedDemonstrators() { return selectedDemonstrators; }
-    public void setSelectedDemonstrators(LinkedList<User> selectedDemonstrators) { this.selectedDemonstrators = selectedDemonstrators; }
+    public LinkedList<Demonstrator> getSelectedDemonstrators() { return selectedDemonstrators; }
+    public void setSelectedDemonstrators(LinkedList<Demonstrator> selectedDemonstrators) { this.selectedDemonstrators = selectedDemonstrators; }
 
-    public User getDemonstrator() { return demonstrator; }
-    public void setDemonstrator(User demonstrator) { this.demonstrator = demonstrator; }
+    public Demonstrator getDemonstrator() { return demonstrator; }
+    public void setDemonstrator(Demonstrator demonstrator) { this.demonstrator = demonstrator; }
     
     public LinkedList<Demonstrator> getWorkingDemonstrators() { return workingDemonstrators; }
     public void setWorkingDemonstrators(LinkedList<Demonstrator> workingDemonstrators) { this.workingDemonstrators = workingDemonstrators; }
@@ -142,6 +146,65 @@ public class Lab implements Serializable{
         return "start";
     }
     
+    public String removeDemonstrators(){
+        LinkedList<Integer> indexesForRemoval = new LinkedList<Integer>();
+        for (int i = 0; i < workingDemonstrators.size(); i++) {
+            Demonstrator d = workingDemonstrators.get(i);
+            if (d.isRejected()) {
+                indexesForRemoval.add(i);
+                try {
+                    App.getInstance().removeDemonstrator(this, d);
+                } catch (DBError ex) {
+                    return "error";
+                }
+            }
+        }
+        int removed = 0;
+        for (int i = 0; i < indexesForRemoval.size(); i++) {
+            int index = indexesForRemoval.get(i);
+            workingDemonstrators.remove(index - removed);
+            removed++;
+        }
+        return "start";
+    }
+    
+    public String removeDemonstrator(Demonstrator d) {
+        workingDemonstrators.remove(d);
+        try {
+            App.getInstance().removeDemonstratorFromLab(this, d);
+        } catch (DBError ex) {
+            return "error";
+        }
+        return "start";
+    }
+    
+    public String addWorkingDemonstrator() {
+        if(workingDemonstrators.contains(demonstrator)){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Demonstrator already added", "IGNORED"));
+        } else {
+            workingDemonstrators.add(demonstrator);
+        }
+        try {
+            App.getInstance().addWorkingDemonstrator(this, demonstrator);
+        } catch (DBError ex) {
+            return "error";
+        }
+        return "start";
+    }
+    
+    public boolean thereIsRejected(){
+        for(Demonstrator d: workingDemonstrators){
+            if(d.isRejected() == true){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void closeLab() {
+        closed = true;
+    }
+    
     public void clear(){
         course = null;
         name = null;
@@ -152,8 +215,7 @@ public class Lab implements Serializable{
         type = null;
         maxDemonstrators = null;
         demonstrators = null;
-        demonstratorsInfo = null;
-        selectedDemonstrators = new LinkedList<User>();
+        selectedDemonstrators = new LinkedList<Demonstrator>();
         demonstrator = null;
     }
 
