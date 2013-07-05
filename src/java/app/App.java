@@ -19,6 +19,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 
@@ -95,7 +97,7 @@ public class App {
                         }
                         if(numOfAccepted == maxDemons)
                             continue;
-                        query = "select l.name as labname, l.date, l.begin, l.end, l.type as labtype, l.closed, "
+                        query = "select l.name as labname, l.begin, l.end, l.type as labtype, l.closed, "
                                 + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number , "
                                 + "c.CourseID, c.department, c.teachyear, c.code, c.name as coursename"
                                 + "  from Lab l, Classroom cr, Course c where l.LabID='"+labID
@@ -119,11 +121,11 @@ public class App {
                             lab.setClassroom(cs);
                             lab.setCourse(course);
                             lab.setName(rs.getString("labname"));
-                            Date dat = rs.getDate("date");
-                            lab.setDate(new java.util.Date(dat.getTime()));
-                            lab.setBeginHour(rs.getInt("begin"));
-                            lab.setEndHour(rs.getInt("end"));
-                            if(dat.getTime() +  lab.getEndHour() * 3600 * 1000 < today){
+                            Timestamp begin = rs.getTimestamp("begin");
+                            lab.setBegin(new java.util.Date(begin.getTime()));
+                            Timestamp end = rs.getTimestamp("end");
+                            lab.setEnd(new java.util.Date(end.getTime()));
+                            if(end.getTime() < today){
                                 lab.setPast(true);
                             }
                             lab.setType(rs.getInt("labtype"));
@@ -786,8 +788,9 @@ public class App {
                 DB.getInstance().putConnection(conn);
                 return false;
             }
-            query = "insert into Lab (CourseID, name, date, begin, end, ClassroomID, type, maxDemons) values ('"+
-                    lab.getCourse().getId()+"','"+lab.getName()+"','"+new Date(lab.getDate().getTime())+"','"+lab.getBeginHour()+"','"+lab.getEndHour()+"','"+
+            query = "insert into Lab (CourseID, name, begin, end, ClassroomID, type, maxDemons) values ('"+
+                    lab.getCourse().getId()+"','"+lab.getName()+"','"+
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getBegin())+"','"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getEnd())+"','"+
                     lab.getClassroom().getId()+"','"+lab.getType()+"','"+lab.getMaxDemonstrators()+"');";
             stat.executeUpdate(query);
             query = "select max(LabID) as max from Lab;";
@@ -861,7 +864,7 @@ public class App {
             Statement stat = conn.createStatement();
             LinkedList<Lab> labs = new LinkedList<Lab>();
             for(Course course: teacher.getCourses()){
-                String query = "select l.LabID, l.name as labname, l.date, l.begin, l.end, l.type as labtype, l.closed, "
+                String query = "select l.LabID, l.name as labname, l.begin, l.end, l.type as labtype, l.closed, "
                         + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number "
                         + "from Lab l, Classroom cr where l.ClassroomID=cr.ClassroomID and l.CourseID='"+course.getId()+"';";
                 ResultSet rs = stat.executeQuery(query);
@@ -877,11 +880,11 @@ public class App {
                     lab.setId(rs.getInt("LabID"));
                     lab.setCourse(course);
                     lab.setName(rs.getString("labname"));
-                    Date date = rs.getDate("date");
-                    lab.setDate(new java.util.Date(date.getTime()));
-                    lab.setBeginHour(rs.getInt("begin"));
-                    lab.setEndHour(rs.getInt("end"));
-                    if(date.getTime() +  lab.getEndHour() * 3600 * 1000 < today){
+                    Timestamp begin = rs.getTimestamp("begin");
+                    lab.setBegin(new java.util.Date(begin.getTime()));
+                    Timestamp end = rs.getTimestamp("end");
+                    lab.setEnd(new java.util.Date(end.getTime()));
+                    if(end.getTime() < today){
                         lab.setPast(true);
                     }
                     lab.setType(rs.getInt("labtype"));
@@ -907,29 +910,36 @@ public class App {
                         demonstrator.setUser(user);
                         workingDemonstrators.add(demonstrator);
                     }
-                    query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department, id.rejected, id.commentary "
-                            + "from User u, Student s, InvitedDemons id "
-                            + "where id.LabID='"+lab.getId()+"' and id.username=u.username and s.username=u.username;";
-                    rsTemp = statTemp.executeQuery(query);
-                    while(rsTemp.next()){
-                        Demonstrator demonstrator = new Demonstrator();
-                        User user = new User();
-                        user.setName(rsTemp.getString("name"));
-                        user.setSurname(rsTemp.getString("surname"));
-                        user.setUsername(rsTemp.getString("username"));
-                        Student student = new Student();
-                        student.setDepartment(rsTemp.getString("department"));
-                        student.setYear(rsTemp.getInt("year"));
-                        student.setGPA(rsTemp.getFloat("gpa"));
-                        student.setRejectedComment(rsTemp.getString("commentary"));
-                        demonstrator.setStudent(student);
-                        demonstrator.setUser(user);
-                        demonstrator.setRejected(rsTemp.getInt("rejected") == 1? true: false);
-                        workingDemonstrators.add(demonstrator);
+                    if(lab.isPast()){
+                        query = "delete from InvitedDemons where LabID='"+lab.getId()+"';";
+                        statTemp.executeUpdate(query);
+                    } else {
+                        query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department, id.rejected, id.commentary "
+                                + "from User u, Student s, InvitedDemons id "
+                                + "where id.LabID='"+lab.getId()+"' and id.username=u.username and s.username=u.username;";
+                        rsTemp = statTemp.executeQuery(query);
+                        while(rsTemp.next()){
+                            Demonstrator demonstrator = new Demonstrator();
+                            User user = new User();
+                            user.setName(rsTemp.getString("name"));
+                            user.setSurname(rsTemp.getString("surname"));
+                            user.setUsername(rsTemp.getString("username"));
+                            Student student = new Student();
+                            student.setDepartment(rsTemp.getString("department"));
+                            student.setYear(rsTemp.getInt("year"));
+                            student.setGPA(rsTemp.getFloat("gpa"));
+                            student.setRejectedComment(rsTemp.getString("commentary"));
+                            demonstrator.setStudent(student);
+                            demonstrator.setUser(user);
+                            demonstrator.setRejected(rsTemp.getInt("rejected") == 1? true: false);
+                            workingDemonstrators.add(demonstrator);
+                        }
                     }
                     query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department "
                             + "from User u, Student s, Demonstrator d "
-                            + "where d.CourseID='"+lab.getCourse().getId()+"' and d.username=u.username and s.username=u.username;";
+                            + "where d.CourseID='"+lab.getCourse().getId()+"' and d.username=u.username and s.username=u.username "
+                            + "and not exists (select * from InvitedDemons i where i.username=d.username and i.LabID='"+lab.getId()+"') "
+                            + "and not exists (select * from LabDemons l where l.username=d.username and l.LabID='"+lab.getId()+"');";
                     rsTemp = statTemp.executeQuery(query);
                     while(rsTemp.next()){
                         Demonstrator demonstrator = new Demonstrator();
@@ -1022,7 +1032,7 @@ public class App {
         }
         try {
             Statement stat = conn.createStatement();
-            String query = "update Lab set end='"+lab.getEndHour()+"' where LabID='"+lab.getId()+"';";
+            String query = "update Lab set end='"+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(lab.getEnd())+"' where LabID='"+lab.getId()+"';";
             stat.executeUpdate(query);
             query = "update Lab set closed=1 where LabID='"+lab.getId()+"';";
             stat.executeUpdate(query);

@@ -7,8 +7,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter("demonstrator")
-public class DemonstratorConverter implements Converter{
+@FacesConverter("teacherEditsDemonstrator")
+public class DemonstratorConverter2 implements Converter{
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -19,7 +19,7 @@ public class DemonstratorConverter implements Converter{
         }
         if(tokenizer.hasMoreTokens()){
             username = tokenizer.nextToken("()");
-            Lab lab = (Lab)context.getApplication().evaluateExpressionGet(context, "#{lab}", Lab.class);
+            Lab lab = (Lab)context.getApplication().evaluateExpressionGet(context, "#{teacher.currlab}", Lab.class);
             LinkedList<Demonstrator> demonstrators = lab.getDemonstrators();
             for(Demonstrator demonstrator: demonstrators){
                 if(demonstrator.getUser().getUsername().equals(username)){

@@ -24,23 +24,17 @@
                     <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
                     <p:inputText id="name" value="#{lab.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
                     <p:message for="name"/>
-                    
-                    <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
-                    <p:calendar id="date" value="#{lab.date}" required="true" requiredMessage="#{msgs.dateRequired}" 
-                                mindate="#{lab.getCurrentDate()}" maxdate="#{lab.getMaxDate()}" pattern="dd/MM/yyyy"/>
-                    <p:message for="date"/>
 
                     <h:outputText value="#{msgs.beginPrompt}" styleClass="emphasis"/>
-                    <p:selectOneMenu id="begin" value="#{lab.beginHour}" required="true" requiredMessage="#{msgs.beginRequired}">
-                        <f:selectItems value="#{lab.begin}"/>
-                        <p:ajax event="change" listener="#{lab.changeEnd}" update="end"/>
-                    </p:selectOneMenu>
+                    <p:calendar id="begin" value="#{lab.begin}" required="true" requiredMessage="#{msgs.beginRequired}" 
+                                mindate="#{lab.tomorrow}" maxdate="#{lab.maxDate}" minHour="8" maxHour="21" stepMinute="15" pattern="dd/MM/yyyy HH:mm">
+                        <p:ajax event="change" update="end"/>
+                    </p:calendar>
                     <p:message for="begin"/>
-
+                    
                     <h:outputText value="#{msgs.endPrompt}" styleClass="emphasis"/>
-                    <p:selectOneMenu id="end" value="#{lab.endHour}" required="true" requiredMessage="#{msgs.endRequired}">
-                        <f:selectItems value="#{lab.end}"/>
-                    </p:selectOneMenu>
+                    <p:calendar id="end" value="#{lab.end}" required="true" requiredMessage="#{msgs.endRequired}" 
+                                mindate="#{lab.minEnd}" maxdate="#{lab.minEnd}" minHour="#{lab.minEndHour}" maxHour="22" stepMinute="15" pattern="dd/MM/yyyy HH:mm"/>
                     <p:message for="end"/>
                     
                     <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>

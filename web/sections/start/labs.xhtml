@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>Ignored</title>
     </h:head>
@@ -22,10 +23,19 @@
                         #{l.name}
                     </p:column>
                     <p:column headerText="#{msgs.datePrompt}">
-                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="#{msgs.durationPrompt}">
-                        #{l.beginHour} - #{l.endHour}h
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{l.end}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        h
                     </p:column>
                     <p:column headerText="#{msgs.classroomPrompt}">
                         #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
@@ -50,10 +60,19 @@
                         #{l.name}
                     </p:column>
                     <p:column headerText="#{msgs.datePrompt}">
-                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="#{msgs.durationPrompt}">
-                        #{l.beginHour} - #{l.endHour}h
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{l.end}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        h
                     </p:column>
                     <p:column headerText="#{msgs.classroomPrompt}">
                         #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}

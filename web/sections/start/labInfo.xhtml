@@ -25,18 +25,22 @@
                     <h:outputText value="#{teacher.currlab.name}"/>
 
                     <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
-                    <p:calendar value="#{teacher.currlab.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    <h:outputText value="#{teacher.currlab.begin}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
 
                     <h:outputText value="#{msgs.durationPrompt}" styleClass="emphasis"/>
                     <h:panelGroup>
-                        <h:panelGroup rendered="#{not teacher.currlab.past}">
-                            #{teacher.currlab.beginHour} - #{teacher.currlab.endHour}h
-                        </h:panelGroup>
-                        <h:panelGroup rendered="#{teacher.currlab.past}">
-                            #{teacher.currlab.beginHour} - <p:selectOneMenu id="end" value="#{teacher.currlab.endHour}">
-                                                                <f:selectItems value="#{teacher.currlab.end}"/>
-                                                            </p:selectOneMenu> h
-                        </h:panelGroup>
+                        <h:outputText value="#{teacher.currlab.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{teacher.currlab.end}" rendered="#{(not teacher.currlab.past) or teacher.currlab.closed}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        <p:calendar value="#{teacher.currlab.end}" timeOnly="true" minHour="#{teacher.currlab.minEndHour}" maxHour="22" stepMinute="15" pattern="HH:mm"
+                                    rendered="#{teacher.currlab.past and (not teacher.currlab.closed)}"/>
+                        h
                     </h:panelGroup>
                     <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
                     <h:outputText value="#{teacher.currlab.classroom}"/>
@@ -79,7 +83,7 @@
                 <h:panelGroup rendered="#{teacher.currlab.past and not teacher.currlab.closed}">
                     <h:panelGroup rendered="#{not empty teacher.currlab.demonstrators}">
                         <p>
-                            <p:selectOneMenu id="demonstrator" value="#{teacher.currlab.demonstrator}" converter="demonstrator">
+                            <p:selectOneMenu id="demonstrator" value="#{teacher.currlab.demonstrator}" converter="teacherEditsDemonstrator">
                                 <f:selectItems value="#{teacher.currlab.demonstrators}" var="d" itemLabel="#{d.user.name} #{d.user.surname} (#{d.user.username})" itemValue="#{d}"/>
                             </p:selectOneMenu>
                         </p>
