@@ -14,6 +14,8 @@ import com.corejsf.Teacher;
 import com.corejsf.User;
 import db.DB;
 import db.DBError;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,15 +24,31 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
+import javax.faces.context.FacesContext;
 
 public class App {
     
     private static App instance;
-    private static final float PRICE = 200;
+    private static float PRICE = 100;
     private DB db;
     
-    private App(){
+    private App() {
         db = DB.getInstance();
+        BufferedReader read = new BufferedReader(new InputStreamReader(FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/conf.properties")));
+        StringTokenizer tokenizer;
+        try {
+            tokenizer = new StringTokenizer(read.readLine());
+            if(tokenizer.hasMoreTokens()){
+                if(tokenizer.nextToken("=").equals("price")){
+                    if(tokenizer.hasMoreTokens()){
+                        String price = tokenizer.nextToken();
+                        PRICE = Float.parseFloat(price);
+                    }
+                }
+            }
+            
+        } catch (Exception ex) {}
     }
     
     public static App getInstance(){

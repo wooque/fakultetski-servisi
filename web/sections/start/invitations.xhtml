@@ -19,10 +19,19 @@
                         #{l.name}
                     </p:column>
                     <p:column headerText="#{msgs.datePrompt}">
-                        <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="#{msgs.durationPrompt}">
-                        #{l.beginHour} - #{l.endHour}h
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{l.end}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        h
                     </p:column>
                     <p:column headerText="#{msgs.classroomPrompt}">
                         #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
@@ -59,10 +68,19 @@
                     #{l.name}
                 </p:column>
                 <p:column headerText="#{msgs.datePrompt}">
-                    <p:calendar value="#{l.date}" readonly="true" pattern="dd/MM/yyyy"/>
+                    <h:outputText value="#{l.begin}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="#{msgs.durationPrompt}">
-                    #{l.beginHour} - #{l.endHour}h
+                    <h:outputText value="#{l.begin}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    -
+                    <h:outputText value="#{l.end}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    h
                 </p:column>
             </p:dataTable>
         </ui:composition>
