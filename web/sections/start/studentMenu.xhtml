@@ -27,6 +27,13 @@
                     </h:form>
                 </div>
             </h:panelGroup>
+            <h:panelGroup rendered="#{not empty student.acceptedInvitations}">
+                <div class="menuItem">
+                    <h:form>
+                        <p:commandLink id="acceptedinv" value="Labs" action="#{nav.setPage('/sections/start/studentLabs.xhtml')}" update=":pagecontent" styleClass="menuLink"/>
+                    </h:form>
+                </div>
+            </h:panelGroup>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>
