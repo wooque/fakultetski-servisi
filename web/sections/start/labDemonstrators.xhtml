@@ -11,6 +11,10 @@
     <h:body>
         <ui:composition>
             <h:form>
+                <p:panel>
+                    <h:outputText value="#{msgs.selectedDemonstrators}" styleClass="emphasis"/>
+                </p:panel>
+                <p></p>
                 <p:dataTable id="demons" value="#{lab.selectedDemonstrators}" var="d" rendered="#{not empty lab.selectedDemonstrators}">
                     <p:column headerText="#{msgs.namePrompt}">
                         #{d.user.name}
@@ -22,17 +26,19 @@
                         #{d.user.username}
                     </p:column>
                 </p:dataTable>
+                <h:panelGroup rendered="#{not empty lab.demonstrators}">
+                    <p>
+                        <p:messages id="allmsg" globalOnly="true"/>
+                    </p>
+                    <p>
+                        <p:selectOneMenu id="demonstrator" value="#{lab.demonstrator}" converter="demonstrator">
+                            <f:selectItems value="#{lab.demonstrators}" var="d" itemLabel="#{d.user.name} #{d.user.surname} (#{d.user.username})" itemValue="#{d}"/>
+                        </p:selectOneMenu>
+                    </p>
+                    <p:commandButton value="#{msgs.addUserText}" action="#{lab.addDemonstrator()}" process="@form" update=":pagecontent"/>
+                </h:panelGroup>
                 <p>
-                    <p:messages id="allmsg" globalOnly="true"/>
-                </p>
-                <p>
-                    <p:selectOneMenu id="demonstrator" value="#{lab.demonstrator}" converter="demonstrator">
-                        <f:selectItems value="#{lab.demonstrators}" var="d" itemLabel="#{d.user.name} #{d.user.surname} (#{d.user.username})" itemValue="#{d}"/>
-                    </p:selectOneMenu>
-                </p>
-                <p:commandButton value="#{msgs.addUserText}" action="#{lab.addDemonstrator()}" process="@form" update=":pagecontent"/>
-                <p>
-                    <p:commandButton value="#{msgs.addLab}" action="#{teacher.saveLab(lab,nav)}" update=":pagecontent"/>
+                    <p:commandButton value="#{msgs.addLab}" action="#{teacher.saveLab(lab,nav)}" process="@form" update=":pagecontent"/>
                 </p>
             </h:form>
         </ui:composition>

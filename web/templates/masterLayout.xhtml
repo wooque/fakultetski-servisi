@@ -14,9 +14,21 @@
             <h:outputStylesheet library="css" name="styles.css"/>
         </h:head>
         <h:body style="background-color: snow">
+            <div id="content">
+                <h:panelGroup id="pagecontent">
+                    <ui:insert name="content">
+                        Default content
+                    </ui:insert>
+                </h:panelGroup>
+                <div id="footer">
+                    <ui:insert name="footer">
+                        <h:outputText value="Vuk Mirovic © 2013"/>
+                    </ui:insert>
+                </div>
+            </div>
             <div id="header">
                 <ui:insert name="header">
-                    College services
+                    <h:outputText value="College services"/>
                 </ui:insert>
             </div>
             <div id="menu">
@@ -26,18 +38,7 @@
                     </ui:insert>
                 </h:panelGroup>
             </div>
-            <div id="content">
-                <h:panelGroup id="pagecontent">
-                    <ui:insert name="content">
-                        Default content
-                    </ui:insert>
-                </h:panelGroup>
-            </div>
-            <div id="footer">
-                <ui:insert name="footer">
-                    Vuk Mirovic © 2013
-                </ui:insert>
-            </div>
+            
         </h:body>
     </f:view>
 </html>

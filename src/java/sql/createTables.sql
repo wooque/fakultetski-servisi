@@ -72,6 +72,7 @@ create table Lab(       LabID INTEGER AUTO_INCREMENT,
                         type INTEGER,
                         maxDemons INTEGER,
                         closed BIT,
+                        accounted BIT,
                         PRIMARY KEY (LabID),
                         FOREIGN KEY (CourseID) references Course(CourseID) on update cascade on delete cascade,
                         FOREIGN KEY (ClassroomID) references Classroom(ClassroomID) on update cascade on delete cascade);
@@ -88,6 +89,13 @@ create table InvitedDemons( InvitedDemonsID INTEGER AUTO_INCREMENT,
 create table LabDemons( LabDemonsID INTEGER AUTO_INCREMENT,
                         LabID INTEGER,
                         username VARCHAR(20),
+                        dateOfPayment DATE,
+                        amount FLOAT,
                         PRIMARY KEY (LabDemonsID),
                         FOREIGN KEY (LabID) references Lab(LabID) on update cascade on delete cascade,
                         FOREIGN KEY (username) references User(username) on update cascade on delete cascade);
+
+create table Coefs(     CoefID INTEGER AUTO_INCREMENT,
+                        type INTEGER,
+                        coef FLOAT,
+                        PRIMARY KEY (CoefID));

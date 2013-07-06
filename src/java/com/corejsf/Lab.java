@@ -58,6 +58,12 @@ public class Lab implements Serializable{
     public Date getEnd() { return end; }
     public void setEnd(Date end) { this.end = end; }
     
+    public Date getAdjustEnd() { return end; }
+    public void setAdjustEnd(Date end) { 
+        Date temp = new Date((this.end.getTime()/(24*3600*1000))*(24*3600*1000));
+        this.end = new Date(temp.getTime() + end.getTime()); 
+    }
+    
     public Date getTomorrow() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 1);
@@ -121,14 +127,12 @@ public class Lab implements Serializable{
         demonstrator = null;
     }
     
-    public String addDemonstrators(Nav nav) {
+    public void loadDemonstrators(){
         try {
              App.getInstance().loadDemonstrators(this);
         } catch (DBError dbe){}
-        nav.setPage("/sections/start/labDemonstrators.xhtml");
-        return "start";
     }
-    
+
     public String removeDemonstrators(){
         LinkedList<Integer> indexesForRemoval = new LinkedList<Integer>();
         for (int i = 0; i < workingDemonstrators.size(); i++) {
@@ -198,6 +202,7 @@ public class Lab implements Serializable{
         maxDemonstrators = null;
         demonstrators = null;
         selectedDemonstrators = new LinkedList<Demonstrator>();
+        workingDemonstrators = null;
         demonstrator = null;
     }
 

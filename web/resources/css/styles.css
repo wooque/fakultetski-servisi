@@ -49,6 +49,13 @@
     font-family: Arial;
     font-weight: bold;
     text-align: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 40px;
+    background-color: beige;
+    padding-top: 10px;
 }
 
 #footer{
@@ -56,8 +63,11 @@
     font-family: Arial;
     text-align: center;
     position: absolute;
-    top: 95%;
-    left: 45%;
+    width: 100%;
+    height: 30px;
+    background-color: snow;
+    bottom: 0px;
+    padding-top: 10px;
 }
 
 #menu {
@@ -66,9 +76,11 @@
     font-size: 1.2em;
     font-family: Arial;
     font-weight: bold;
-    position: absolute;
+    position: fixed;
+    top: 50px;
+    left: 0px;
     width: 200px;
-    height: 60%;
+    height: 600px;
 }
 
 #content {
@@ -77,6 +89,8 @@
     left: 50%; 
     width: 800px;
     margin-left: -400px;
+    padding-bottom: 50px;
+    min-height: 500px;
 }
 
 .menuItem {

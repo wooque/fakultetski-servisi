@@ -116,21 +116,19 @@ public class Teacher implements Serializable{
     
     public String saveLab(Lab lab, Nav nav){
         boolean outcome;
-        if(labs == null){
-            try{
-                App.getInstance().loadLabs(this);
-            } catch (DBError dbe) {
-                return "error";
-            }
-        }
         try {
              outcome = App.getInstance().saveLab(lab);
         } catch (DBError dbe){
             return "error";
         }
+        try{
+            App.getInstance().loadLabs(this);
+        } catch (DBError dbe) {
+            return "error";
+        }
         if(outcome){
             nav.setPage("/sections/start/labs.xhtml");
-            labs.add(lab);
+            lab.clear();
         } else {
             nav.setPage("/sections/start/addLab.xhtml");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Lab practice already exist", "IGNORED"));

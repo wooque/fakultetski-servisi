@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:dataTable id="sellabs" value="#{admin.selectedLabs}" var="l">
+                    <p:column headerText="#{msgs.coursePrompt}">
+                        #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                    </p:column>
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{l.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.datePrompt}">
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="#{msgs.durationPrompt}">
+                        <h:outputText value="#{l.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{l.end}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        h
+                    </p:column>
+                    <p:column headerText="#{msgs.classroomPrompt}">
+                        #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
+                    </p:column>
+                    <p:column headerText="#{msgs.typePrompt}">
+                        #{l.typeString}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.details}" action="#{admin.showLab(l, nav)}" process="@form" update=":pagecontent"/>
+                    </p:column>
+                </p:dataTable>
+                <p></p>
+                <p:calendar id="begin" value="#{admin.beginAccountDate}" mindate="#{admin.minDate}" maxdate="#{lab.maxDate}" pattern="dd/MM/yyyy">
+                    <p:ajax event="dateSelect" update="end,sellabs"/>
+                </p:calendar>
+                &nbsp;
+                <p:calendar id="end" value="#{admin.endAccountDate}" mindate="#{admin.minEndDate}" maxdate="#{admin.maxDate}" pattern="dd/MM/yyyy">
+                    <p:ajax event="dateSelect" update="sellabs"/>
+                </p:calendar>
+                &nbsp;
+                <p:commandButton value="#{msgs.account}" action="#{admin.account(nav)}" process="@form" update=":pagecontent"/>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

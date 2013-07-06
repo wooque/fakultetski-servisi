@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Ignored</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <p:panelGrid columns="2" styleClass="lab">
+                    <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{admin.currlab.course}"/>
+
+                    <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{admin.currlab.name}"/>
+
+                    <h:outputText value="#{msgs.datePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{admin.currlab.begin}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+
+                    <h:outputText value="#{msgs.durationPrompt}" styleClass="emphasis"/>
+                    <h:panelGroup>
+                        <h:outputText value="#{admin.currlab.begin}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        -
+                        <h:outputText value="#{admin.currlab.end}">
+                            <f:convertDateTime pattern="HH:mm"/>
+                        </h:outputText>
+                        h
+                    </h:panelGroup>
+                    <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{admin.currlab.classroom}"/>
+
+                    <h:outputText value="#{msgs.typePrompt}" styleClass="emphasis"/>
+                    <h:outputText value="#{admin.currlab.typeString}"/>
+                </p:panelGrid>
+            </h:form>
+            <p></p>
+            <p:dataTable id="demons" value="#{admin.currlab.workingDemonstrators}" var="d" rendered="#{not empty admin.currlab.workingDemonstrators}">
+                <p:column headerText="#{msgs.namePrompt}">
+                    #{d.user.name}
+                </p:column>
+                <p:column headerText="#{msgs.surnamePrompt}">
+                    #{d.user.surname}
+                </p:column>
+                <p:column headerText="#{msgs.usernamePrompt}">
+                    #{d.user.username}
+                </p:column>
+                <p:column headerText="#{msgs.yearPrompt}">
+                    #{d.student.year}
+                </p:column>
+                <p:column headerText="#{msgs.GPAPrompt}">
+                    #{d.student.GPA}
+                </p:column>
+            </p:dataTable>
+            <h:form>
+                <p>
+                    <p:commandButton value="Back" action="#{nav.setPage('/sections/start/accountLabs.xhtml')}" update=":pagecontent"/>
+                </p>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

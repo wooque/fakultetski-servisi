@@ -18,6 +18,7 @@
                     <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
                     <p:selectOneMenu id="course" value="#{lab.course}" required="true" requiredMessage="#{msgs.codeRequired}">
                         <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
+                        <p:ajax event="change" listener="#{lab.loadDemonstrators}" update="actions"/>
                     </p:selectOneMenu>
                     <p:message for="course"/>
                     
@@ -53,7 +54,10 @@
                     <p:message for="max"/>
                 </p:panelGrid>
                 <p>
-                    <p:commandButton value="#{msgs.addDemonstratorsButtonText}" action="#{lab.addDemonstrators(nav)}" process="@form" update=":pagecontent"/>
+                    <h:panelGroup id="actions">
+                        <p:commandButton value="#{msgs.addDemonstratorsButtonText}" action="#{nav.setPage('/sections/start/labDemonstrators.xhtml')}" process="@form" update=":pagecontent" rendered="#{not empty lab.demonstrators}"/>
+                        <p:commandButton value="#{msgs.addLab}" action="#{teacher.saveLab(lab,nav)}" process="@form" update=":pagecontent" rendered="#{empty lab.demonstrators}"/>
+                    </h:panelGroup>
                 </p>
             </h:form>
         </ui:composition>

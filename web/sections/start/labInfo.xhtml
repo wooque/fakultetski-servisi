@@ -38,7 +38,7 @@
                         <h:outputText value="#{teacher.currlab.end}" rendered="#{(not teacher.currlab.past) or teacher.currlab.closed}">
                             <f:convertDateTime pattern="HH:mm"/>
                         </h:outputText>
-                        <p:calendar value="#{teacher.currlab.end}" timeOnly="true" minHour="#{teacher.currlab.minEndHour}" maxHour="22" stepMinute="15" pattern="HH:mm"
+                        <p:calendar value="#{teacher.currlab.adjustEnd}" timeOnly="true" minHour="#{teacher.currlab.minEndHour}" maxHour="22" stepMinute="15" pattern="HH:mm"
                                     rendered="#{teacher.currlab.past and (not teacher.currlab.closed)}"/>
                         h
                     </h:panelGroup>
