@@ -20,6 +20,7 @@ public class Student implements Serializable{
     private boolean applied;
     private LinkedList<Lab> invitations;
     private LinkedList<Lab> acceptedInvitations = new LinkedList<Lab>();
+    private LinkedList<Payment> payments;
     private String rejectedComment;
     private Lab currLab;
 
@@ -46,6 +47,9 @@ public class Student implements Serializable{
 
     public LinkedList<Lab> getAcceptedInvitations() { return acceptedInvitations; }
     public void setAcceptedInvitations(LinkedList<Lab> acceptedInvitations) { this.acceptedInvitations = acceptedInvitations; }
+    
+    public LinkedList<Payment> getPayments() { return payments; }
+    public void setPayments(LinkedList<Payment> payments) { this.payments = payments; }
     
     public String getRejectedComment() { return rejectedComment; }
     public void setRejectedComment(String rejectedComment) { this.rejectedComment = rejectedComment; }
@@ -95,5 +99,13 @@ public class Student implements Serializable{
         }
         RequestContext.getCurrentInstance().execute("dlg.hide()");
         return "start";
+    }
+    
+    public Float getTotalPayments() {
+        float sum = 0;
+        for(Payment payment: payments) {
+            sum += payment.getAmount();
+        }
+        return sum;
     }
 }

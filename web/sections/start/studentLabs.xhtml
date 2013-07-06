@@ -2,15 +2,94 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>IGNORED</title>
     </h:head>
     <h:body>
         <h:form>
+            <p:panel>
+                <h:outputText value="#{msgs.acceptedPrompt}" styleClass="emphasis"/>
+            </p:panel>
+            <p></p>
             <p:dataTable value="#{student.acceptedInvitations}" var="l">
-                
+                <p:column headerText="#{msgs.coursePrompt}">
+                    #{l.course.department}#{l.course.teachingYear}#{l.course.code}
+                </p:column>
+                <p:column headerText="#{msgs.namePrompt}">
+                    #{l.name}
+                </p:column>
+                <p:column headerText="#{msgs.datePrompt}">
+                    <h:outputText value="#{l.begin}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msgs.durationPrompt}">
+                    <h:outputText value="#{l.begin}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    -
+                    <h:outputText value="#{l.end}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    h
+                </p:column>
+                <p:column headerText="#{msgs.classroomPrompt}">
+                    #{l.classroom.location} - #{l.classroom.type} #{l.classroom.number}
+                </p:column>
+                <p:column headerText="#{msgs.typePrompt}">
+                    #{l.typeString}
+                </p:column>
             </p:dataTable>
+            <p></p>
+            <p:panel>
+                <h:outputText value="#{msgs.paymentsPrompt}" styleClass="emphasis"/>
+            </p:panel>
+            <p></p>
+            <p:dataTable value="#{student.payments}" var="p">
+                <p:column headerText="#{msgs.coursePrompt}">
+                    #{p.lab.course.department}#{p.lab.course.teachingYear}#{p.lab.course.code}
+                </p:column>
+                <p:column headerText="#{msgs.namePrompt}">
+                    #{p.lab.name}
+                </p:column>
+                <p:column headerText="#{msgs.datePrompt}">
+                    <h:outputText value="#{p.lab.begin}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msgs.durationPrompt}">
+                    <h:outputText value="#{p.lab.begin}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    -
+                    <h:outputText value="#{p.lab.end}">
+                        <f:convertDateTime pattern="HH:mm"/>
+                    </h:outputText>
+                    h
+                </p:column>
+                <p:column headerText="#{msgs.classroomPrompt}">
+                    #{p.lab.classroom.location} - #{p.lab.classroom.type} #{p.lab.classroom.number}
+                </p:column>
+                <p:column headerText="#{msgs.typePrompt}">
+                    #{p.lab.typeString}
+                </p:column>
+                <p:column headerText="#{msgs.datePrompt}">
+                    <h:outputText value="#{p.date}">
+                        <f:convertDateTime parent="yyyy-MM-dd"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msgs.amountPrompt}">
+                    #{p.amount} din.
+                </p:column>
+            </p:dataTable>
+            <p></p>
+            <p:panel styleClass="total">
+                <h:outputText value="#{msgs.totalPrompt}" styleClass="emphasis"/>
+                :
+                <h:outputText value="#{student.totalPayments} din." styleClass="emphasis"/> 
+            </p:panel>
         </h:form>
     </h:body>
 </html>

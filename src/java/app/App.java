@@ -6,6 +6,7 @@ import com.corejsf.Classroom;
 import com.corejsf.Course;
 import com.corejsf.Demonstrator;
 import com.corejsf.Lab;
+import com.corejsf.Payment;
 import com.corejsf.Search;
 import com.corejsf.Search.Elem;
 import com.corejsf.Signup;
@@ -14,8 +15,7 @@ import com.corejsf.Teacher;
 import com.corejsf.User;
 import db.DB;
 import db.DBError;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.Properties;
 import javax.faces.context.FacesContext;
 
 public class App {
@@ -35,20 +35,11 @@ public class App {
     
     private App() {
         db = DB.getInstance();
-        BufferedReader read = new BufferedReader(new InputStreamReader(FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/conf.properties")));
-        StringTokenizer tokenizer;
+        Properties properties = new Properties();
         try {
-            tokenizer = new StringTokenizer(read.readLine());
-            if(tokenizer.hasMoreTokens()){
-                if(tokenizer.nextToken("=").equals("price")){
-                    if(tokenizer.hasMoreTokens()){
-                        String price = tokenizer.nextToken();
-                        PRICE = Float.parseFloat(price);
-                    }
-                }
-            }
-            
-        } catch (Exception ex) {}
+            properties.load(FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/conf.properties"));
+        } catch (IOException ex) {}
+        PRICE = Float.parseFloat((String)properties.getProperty("price"));
     }
     
     public static App getInstance(){
@@ -96,11 +87,14 @@ public class App {
                     } else {
                         student.setApplied(false);
                     }
-                    query = "select labID from InvitedDemons where username='"+user.getUsername()+"' and rejected <> 1;";
+                    query = "select labID from InvitedDemons where username='"+user.getUsername()+"' and rejected is null;";
                     rs = stat.executeQuery(query);
-                    LinkedList<Lab> labs = new LinkedList<Lab>();
+                    LinkedList<Integer> labIDs = new LinkedList<Integer>();
                     while(rs.next()){
-                        Integer labID = rs.getInt("LabID");
+                        labIDs.add(rs.getInt("LabID"));
+                    }
+                    LinkedList<Lab> labs = new LinkedList<Lab>();
+                    for(Integer labID: labIDs){
                         query = "select count(username) as numofaccepted from LabDemons where labID='"+labID+"';";
                         rs = stat.executeQuery(query);
                         int numOfAccepted = 0;
@@ -152,6 +146,63 @@ public class App {
                         labs.add(lab);
                     }
                     student.setInvitations(labs);
+                    query = "select labID from LabDemons where username='"+user.getUsername()+"';";
+                    rs = stat.executeQuery(query);
+                    labIDs = new LinkedList<Integer>();
+                    while(rs.next()){
+                        labIDs.add(rs.getInt("LabID"));
+                    }
+                    labs = new LinkedList<Lab>();
+                    LinkedList<Payment> payments = new LinkedList<Payment>();
+                    for(int i = 0; i < labIDs.size(); i++){
+                        Integer labID = labIDs.get(i);
+                        query = "select l.name as labname, l.begin, l.end, l.type as labtype, l.closed, "
+                                + "ld.dateOfPayment, ld.amount, "
+                                + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number, "
+                                + "c.CourseID, c.department, c.teachyear, c.code, c.name as coursename"
+                                + "  from Lab l, Classroom cr, Course c, LabDemons ld where l.LabID='"+labID+"' and ld.LabID='"+labID
+                                + "' and ld.username='"+user.getUsername()+"' and l.ClassroomID=cr.ClassroomID and l.CourseID=c.CourseID;";
+                        rs = stat.executeQuery(query);
+                        Payment payment = new Payment();
+                        Lab lab = new Lab();
+                        Classroom cs = new Classroom();
+                        Course course = new Course();
+                        long today = Calendar.getInstance().getTimeInMillis();
+                        if(rs.next()){
+                            cs.setId(rs.getInt("ClassroomID"));
+                            cs.setLocation(rs.getString("location"));
+                            cs.setType(rs.getString("classtype"));
+                            cs.setNumber(rs.getInt("number"));
+                            course.setId(rs.getInt("CourseID"));
+                            course.setDepartment(rs.getString("department"));
+                            course.setTeachingYear(rs.getInt("teachyear"));
+                            course.setCode(rs.getString("code"));
+                            course.setName(rs.getString("coursename"));
+                            lab.setId(labID);
+                            lab.setClassroom(cs);
+                            lab.setCourse(course);
+                            lab.setName(rs.getString("labname"));
+                            Timestamp begin = rs.getTimestamp("begin");
+                            lab.setBegin(new java.util.Date(begin.getTime()));
+                            Timestamp end = rs.getTimestamp("end");
+                            lab.setEnd(new java.util.Date(end.getTime()));
+                            if(end.getTime() < today){
+                                lab.setPast(true);
+                            }
+                            lab.setType(rs.getInt("labtype"));
+                            lab.setClosed(rs.getInt("closed") == 1? true: false);
+                            payment.setLab(lab);
+                            payment.setDate(rs.getDate("dateOfPayment"));
+                            payment.setAmount(rs.getFloat("amount"));
+                        }
+                        if(payment.getDate() == null){
+                            labs.add(lab);
+                        } else {
+                            payments.add(payment);
+                        }
+                    }
+                    student.setPayments(payments);
+                    student.setAcceptedInvitations(labs);
                 } else {
                     stat.close();
                     DB.getInstance().putConnection(conn);
@@ -1075,7 +1126,7 @@ public class App {
                     + "c.CourseID, c.department, c.teachyear, c.code, c.name, c.semester, c.year, "
                     + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number "
                     + "from Lab l, Classroom cr, Course c "
-                    + "where l.ClassroomID=cr.ClassroomID and l.CourseID=c.CourseID and l.closed=1 and l.accounted <> 1;";
+                    + "where l.ClassroomID=cr.ClassroomID and l.CourseID=c.CourseID and l.closed=1 and l.accounted is null;";
             ResultSet rs = stat.executeQuery(query);
             long today = Calendar.getInstance().getTimeInMillis();
             while(rs.next()){
@@ -1164,8 +1215,10 @@ public class App {
                         "' where LabID='"+lab.getId()+"';";
                 stat.executeUpdate(query);
                 query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department, sum(ld.amount) as payment "
-                        + "from User u, Student s, LabDemons ld "
-                        + "where ld.username=u.username and s.username=u.username "
+                        + "from User u, Student s, LabDemons ld, Lab l "
+                        + "where ld.username=u.username and s.username=u.username and ld.LabID=l.LabID and"
+                        + "l.begin>='"+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(admin.getBeginAccountDate())+"'"
+                        + " and l.begin<='"+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(admin.getEndAccountDate())+"' "
                         + "group by username;";
                 rs = stat.executeQuery(query);
                 LinkedList<Demonstrator> demonstrators = new LinkedList<Demonstrator>();

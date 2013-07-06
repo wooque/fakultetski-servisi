@@ -27,7 +27,7 @@
                     </h:form>
                 </div>
             </h:panelGroup>
-            <h:panelGroup rendered="#{not empty student.acceptedInvitations}">
+            <h:panelGroup rendered="#{not empty student.acceptedInvitations or not empty student.payments}">
                 <div class="menuItem">
                     <h:form>
                         <p:commandLink id="acceptedinv" value="Labs" action="#{nav.setPage('/sections/start/studentLabs.xhtml')}" update=":pagecontent" styleClass="menuLink"/>
