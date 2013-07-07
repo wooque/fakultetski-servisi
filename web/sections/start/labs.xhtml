@@ -15,7 +15,7 @@
                     <h:outputText value="#{msgs.futureLabsText}" styleClass="emphasis"/>
                 </p:panel>
                 <p></p>
-                <p:dataTable value="#{teacher.futureLabs}" var="l">
+                <p:dataTable value="#{teacher.futureLabs}" var="l" rendered="#{not empty teacher.futureLabs}">
                     <p:column headerText="#{msgs.coursePrompt}">
                         #{l.course.department}#{l.course.teachingYear}#{l.course.code}
                     </p:column>
@@ -47,12 +47,13 @@
                         <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
                     </p:column>
                 </p:dataTable>
+                <h:outputText value="#{msgs.noFutureLabs}" styleClass="emphasis arialed" rendered="#{empty teacher.futureLabs}"/>
                 <p></p>
                 <p:panel>
                     <h:outputText value="#{msgs.pastLabsText}" styleClass="emphasis"/>
                 </p:panel>
                 <p></p>
-                <p:dataTable value="#{teacher.pastLabs}" var="l">
+                <p:dataTable value="#{teacher.pastLabs}" var="l" rendered="#{not empty teacher.pastLabs}">
                     <p:column headerText="#{msgs.coursePrompt}">
                         #{l.course.department}#{l.course.teachingYear}#{l.course.code}
                     </p:column>
@@ -84,6 +85,7 @@
                         <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
                     </p:column>
                 </p:dataTable>
+                <h:outputText value="#{msgs.noPastLabs}" styleClass="emphasis arialed" rendered="#{empty teacher.pastLabs}"/>
                 <p>
                     <p:commandButton value="#{msgs.closedLabs}" action="#{nav.setPage('/sections/start/closedLabs.xhtml')}" update=":pagecontent"/>
                 </p>

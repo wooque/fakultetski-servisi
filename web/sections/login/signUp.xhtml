@@ -17,14 +17,14 @@
                         <p:inputText id="username" value="#{signup.username}" 
                                      required ="true" requiredMessage="#{msgs.usernameRequired}" validatorMessage="#{msgs.usernameInvalid}">
                             <p:ajax event="blur" process="@this" listener="#{signup.checkUsername()}" update="allmsg"/>
-                            <f:validateRegex pattern="^[A-Za-z0-9][_A-Za-z0-9\.]{5,19}$"/>
+                            <f:validateRegex pattern="^[A-Za-z0-9][_A-Za-z0-9\.]{3,19}$"/>
                         </p:inputText>
                         <p:message id="usernamemsg" for="username"/>
 
                         <h:outputText styleClass="emphasis" value="#{msgs.passwordPrompt}"/>
                         <p:password id="password" value="#{signup.password}"
                                     required="true" requiredMessage="#{msgs.passwordRequired}" validatorMessage="#{msgs.passwordInvalid}">
-                            <f:validateRegex pattern="^[_A-Za-z0-9\.]{6,20}$"/>
+                            <f:validateRegex pattern="^[_A-Za-z0-9\.]{4,20}$"/>
                         </p:password>
                         <p:message id="passwordmsg" for="password"/>
                         

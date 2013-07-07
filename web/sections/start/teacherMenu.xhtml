@@ -11,20 +11,22 @@
     <h:body>
         <ui:composition>
             <corejsf:menuItem label="Info" page="/sections/start/teacher.xhtml" update=":pagecontent"/>
-            <div class="menuItem">
-                <h:form>
-                    <p:commandLink id="appliesitem" value="Applies(#{teacher.appliesNum})" action="#{teacher.loadApplies(nav)}" 
-                                   update=":pagecontent,:pagemenu" styleClass="#{teacher.appliesNum == '0'? 'menuLink': 'menuLinkEmphased'}"/>
-                </h:form>
-            </div>
-            <ui:repeat value="#{teacher.courses}" var="c" rendered="#{teacher.showCoursesInMenu }">
-                <div class="menuItem, menuSubItem">
+            <h:panelGroup rendered="#{teacher.appliesNum != '0'}">
+                <div class="menuItem" rendered="">
                     <h:form>
-                        <p:commandLink value="#{c.name}(#{teacher.getCourseApplies(c)})" action="#{teacher.setCurrentCourse(c, nav)}" 
-                                       update=":pagecontent" styleClass="#{teacher.getCourseApplies(c) == '0'? 'menuLink': 'menuLinkEmphased'}"/>
+                        <p:commandLink id="appliesitem" value="Applies(#{teacher.appliesNum})" action="#{teacher.loadApplies(nav)}" 
+                                       update=":pagecontent,:pagemenu" styleClass="#{teacher.appliesNum == '0'? 'menuLink': 'menuLinkEmphased'}"/>
                     </h:form>
                 </div>
-            </ui:repeat>
+                <ui:repeat value="#{teacher.courses}" var="c" rendered="#{teacher.showCoursesInMenu}">
+                    <div class="menuItem, menuSubItem">
+                        <h:form>
+                            <p:commandLink value="#{c.name}(#{teacher.getCourseApplies(c)})" action="#{teacher.setCurrentCourse(c, nav)}" 
+                                           update=":pagecontent" styleClass="#{teacher.getCourseApplies(c) == '0'? 'menuLink': 'menuLinkEmphased'}"/>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+            </h:panelGroup>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Labs" action="#{teacher.loadLabs(nav)}" update=":pagecontent" styleClass="menuLink"/>

@@ -5,10 +5,8 @@ import db.DBError;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 
 @SessionScoped
 @ManagedBean(name = "teacher")
@@ -75,7 +73,7 @@ public class Teacher implements Serializable{
                 return Integer.toString(applies.get(i).size());
             }
         }
-        return "ERROR";
+        return "error";
     }
     
     public LinkedList<Apply> getCurrentApplies() {

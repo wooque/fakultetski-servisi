@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>IGNORED</title>
     </h:head>
@@ -26,7 +27,9 @@
                     #{d.student.GPA}
                 </p:column>
                 <p:column headerText="#{msgs.paymentPrompt}">
-                    #{d.payment}
+                    <h:outputText value="#{d.payment}">
+                        <f:convertNumber maxFractionDigits="2"/>
+                    </h:outputText>
                 </p:column>
             </p:dataTable>
         </ui:composition>

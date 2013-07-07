@@ -69,10 +69,10 @@ public class User implements Serializable {
                  nav.setPage("/sections/start/teacher.xhtml");
             }
             int month = Calendar.getInstance().get(Calendar.MONTH);
-            // TO DO: set actual month in the release
-            beginOfTheYear = (month == 5);
+            
+            beginOfTheYear = (month == App.BEGIN_OF_THE_YEAR);
             // quick-and-dirty solution for reseting sureveysActivated
-            if ((month != 5) && (isSurveysActivated() == true)){
+            if ((month != App.BEGIN_OF_THE_YEAR) && isSurveysActivated()){
                 setSurveysActivated(false);
             }
             return "start?faces-redirect=true";

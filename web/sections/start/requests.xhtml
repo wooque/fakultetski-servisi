@@ -10,7 +10,7 @@
     <h:body>
         <ui:composition>
             <h:form>
-                <p:dataTable id="signuptable" value="#{admin.signups}" var="signuprequest">
+                <p:dataTable id="signuptable" value="#{admin.signups}" var="signuprequest" rendered="#{not empty admin.signups}">
                     <p:column headerText="Type">
                         <h:outputText value="#{signuprequest.type}"/>
                     </p:column>
@@ -39,12 +39,15 @@
                         <h:outputText value="#{signuprequest.GPA}"/>
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Accept" action="#{admin.accept(signuprequest)}" process="@this" update=":pagemenu,signuptable"/>
+                        <p:commandButton value="Accept" action="#{admin.accept(signuprequest)}" process="@this" update=":pagemenu,@form"/>
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Reject" action="#{admin.reject(signuprequest)}" process="@this" update=":pagemenu,signuptable"/>
+                        <p:commandButton value="Reject" action="#{admin.reject(signuprequest)}" process="@this" update=":pagemenu,@form"/>
                     </p:column>
                 </p:dataTable>
+                <p:panel rendered="#{empty admin.signups}">
+                    <h:outputText value="#{msgs.noRequest}" styleClass="emphasis"/>
+                </p:panel>
             </h:form>
         </ui:composition>
     </h:body>

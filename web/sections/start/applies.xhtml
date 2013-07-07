@@ -10,7 +10,7 @@
     <h:body>
         <ui:composition>
             <h:form>
-                <p:dataTable id="appliestable" value="#{teacher.currentApplies}" var="a">
+                <p:dataTable id="appliestable" value="#{teacher.currentApplies}" var="a" rendered="#{not empty teacher.currentApplies}">
                     <p:column headerText="#{msgs.namePrompt}">
                         #{a.name}
                     </p:column>
@@ -30,12 +30,15 @@
                         #{a.email}
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Accept" action="#{teacher.accept(a)}" process="@this" update=":pagemenu,appliestable"/>
+                        <p:commandButton value="Accept" action="#{teacher.accept(a)}" process="@this" update=":pagemenu,@form"/>
                     </p:column>
                     <p:column>
-                        <p:commandButton value="Reject" action="#{teacher.reject(a)}" process="@this" update=":pagemenu,appliestable"/>
+                        <p:commandButton value="Reject" action="#{teacher.reject(a)}" process="@this" update=":pagemenu,@form"/>
                     </p:column>
                 </p:dataTable>
+                <p:panel rendered="#{empty teacher.currentApplies}">
+                    <h:outputText value="#{msgs.noApplies}" styleClass="emphasis"/>
+                </p:panel>
             </h:form>
         </ui:composition>
     </h:body>

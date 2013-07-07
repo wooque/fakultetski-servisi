@@ -66,10 +66,10 @@
                 <p:column headerText="#{msgs.GPAPrompt}">
                     #{d.student.GPA}
                 </p:column>
-                <p:column headerText="#{msgs.rejectInvitation}">
+                <p:column headerText="#{msgs.rejectInvitation}" rendered="#{not teacher.currlab.closed}">
                     <p:selectBooleanCheckbox value="#{d.rejected}" disabled="true"/>
                 </p:column>
-                <p:column headerText="#{msgs.commentaryPrompt}">
+                <p:column headerText="#{msgs.commentaryPrompt}" rendered="#{not teacher.currlab.closed}">
                     #{d.student.rejectedComment}
                 </p:column>
                 <p:column rendered="#{teacher.currlab.past and not teacher.currlab.closed}">

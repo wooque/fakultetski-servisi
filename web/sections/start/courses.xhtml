@@ -15,23 +15,29 @@
                     <p:panelGrid columns="1" styleClass="signupcell">
                         <h:outputText id="departmentlabel" styleClass="emphasis" value="#{msgs.departmentPrompt}"/>
                         <p:selectOneMenu id="department" value="#{course.department}" required="true" requiredMessage="#{msgs.departmentRequired}">
+                            <f:selectItem itemLabel="Select one" itemValue="#{null}"/>
                             <f:selectItems value="#{course.departments}"/>
                         </p:selectOneMenu>
                         <p:message id="departmentmsg" for="department"/>
 
                         <h:outputText id="teachyearlabel" styleClass="emphasis" value="#{msgs.yearPrompt}"/>
-                        <p:selectOneMenu id="teachyear" value="#{course.teachingYear}" required="true" requiredMessage="#{msgs.yearRequired}">
+                        <p:selectOneMenu id="teachyear" value="#{course.teachingYearString}" required="true" requiredMessage="#{msgs.yearRequired}">
+                            <f:selectItem itemLabel="Select one" itemValue="#{null}"/>
                             <f:selectItems value="#{course.teachingYears}"/>
                         </p:selectOneMenu>
                         <p:message id="teachyearmsg" for="teachyear"/> 
 
                         <h:outputText id="codelabel" styleClass="emphasis" value="#{msgs.codePrompt}"/>
-                        <p:inputText id="code" value="#{course.code}" required="true" requiredMessage="#{msgs.codeRequired}"/>
+                        <p:inputText id="code" value="#{course.code}" required="true" requiredMessage="#{msgs.codeRequired}" validatorMessage="#{msgs.codeInvalid}">
+                            <f:validateRegex pattern="^[A-Za-z][A-Za-z0-9]{1,2}$"/>
+                        </p:inputText>
                         <p:message id="codemsg" for="code"/>
                     </p:panelGrid>
                     <p:panelGrid columns="1" styleClass="signupcell">
                         <h:outputText id="namelabel" styleClass="emphasis" value="#{msgs.namePrompt}"/>
-                        <p:inputText id="name" value="#{course.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
+                        <p:inputText id="name" value="#{course.name}" required="true" requiredMessage="#{msgs.nameRequired}" validatorMessage="#{msgs.nameInvalid}">
+                            <f:validateRegex pattern="^[A-Za-z]+( [A-Za-z]+)*( [0-9]){0,1}$"/>
+                        </p:inputText>
                         <p:message id="namemsg" for="name"/>
 
                         <h:outputText id="semesterlabel" styleClass="emphasis" value="#{msgs.semesterPrompt}"/>
@@ -39,12 +45,6 @@
                             <f:selectItems value="#{course.semesters}"/>
                         </p:selectOneRadio>
                         <p:message id="semestermsg" for="semester"/>
-
-                        <h:outputText id="yearlabel" styleClass="emphasis" value="#{msgs.yearPrompt}"/>
-                        <p:selectOneMenu id="year" value="#{course.year}" required="true" requiredMessage="#{msgs.yearRequired}">
-                            <f:selectItems value="#{course.years}"/>
-                        </p:selectOneMenu>
-                        <p:message id="yearmsg" for="year"/>
                         
                         <p:messages id="allmsg" globalOnly="true" autoUpdate="true"/>
                         <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course, nav)}" process="@form" update=":pagecontent"/>

@@ -31,6 +31,8 @@ public class App {
     
     private static App instance;
     private static float PRICE = 100;
+    // set actual month in the release
+    public static final int BEGIN_OF_THE_YEAR = 6;
     private DB db;
     
     private App() {
@@ -107,8 +109,11 @@ public class App {
                         if(rs.next()){
                             maxDemons = rs.getInt("maxDemons");
                         }
-                        if(numOfAccepted == maxDemons)
+                        if(numOfAccepted == maxDemons){
+                            query = "delete from InvitedDemons where username='"+user.getUsername()+"' and LabID='"+labID+"';";
+                            stat.executeUpdate(query);
                             continue;
+                        }
                         query = "select l.name as labname, l.begin, l.end, l.type as labtype, l.closed, "
                                 + "cr.ClassroomID, cr.location, cr.type as classtype, cr.number , "
                                 + "c.CourseID, c.department, c.teachyear, c.code, c.name as coursename"
@@ -452,8 +457,8 @@ public class App {
         }
         try {
             Statement stat = conn.createStatement();
-            String query = "select * from Course where department='"+course.getDepartment()+"' and teachyear='"+course.getTeachingYear()
-                            +"' and code='"+course.getCode()+"' and year='"+course.getYear()+"';";
+            String query = "select * from Course where department like '"+course.getDepartment()+"' and teachyear='"+course.getTeachingYear()
+                            +"' and code like '"+course.getCode()+"' and year='"+course.getYear()+"';";
             ResultSet rs = stat.executeQuery(query);
             if(rs.next()){
                 stat.close();
@@ -705,21 +710,29 @@ public class App {
                 query.append("' and t.courseID=d.courseID");
             }
             if(search.isSpecific()){
-                query.append(" and(");
-                LinkedList<Course> teacherCourses = teacher.getCourses();
-                for(int i = 0; i < teacherCourses.size(); i++){
-                    Course course = teacherCourses.get(i);
-                    if(course.isSelected()){
-                        if(i != 0){
-                            query.append(" or ");
-                        }
-                        query.append("d.courseID='");
-                        query.append(course.getId());
-                        query.append("'");
-                        
+                boolean isSelected = false;
+                for(Course c: teacher.getCourses()){
+                    if(c.isSelected()){
+                        isSelected = true;
                     }
                 }
-                query.append(")");
+                if(isSelected){
+                    query.append(" and(");
+                    LinkedList<Course> teacherCourses = teacher.getCourses();
+                    for(int i = 0; i < teacherCourses.size(); i++){
+                        Course course = teacherCourses.get(i);
+                        if(course.isSelected()){
+                            if(i != 0){
+                                query.append(" or ");
+                            }
+                            query.append("d.courseID='");
+                            query.append(course.getId());
+                            query.append("'");
+
+                        }
+                    }
+                    query.append(")");
+                }
             }
             if(!search.getName().isEmpty()){
                 query.append(" and u.name='");
@@ -1229,7 +1242,7 @@ public class App {
                 stat.executeUpdate(query);
                 query = "select u.name, u.surname, u.username, s.year, s.gpa, s.department, sum(ld.amount) as payment "
                         + "from User u, Student s, LabDemons ld, Lab l "
-                        + "where ld.username=u.username and s.username=u.username and ld.LabID=l.LabID and"
+                        + "where ld.username=u.username and s.username=u.username and ld.LabID=l.LabID and "
                         + "l.begin>='"+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(admin.getBeginAccountDate())+"'"
                         + " and l.begin<='"+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(admin.getEndAccountDate())+"' "
                         + "group by username;";

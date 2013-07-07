@@ -1,12 +1,12 @@
 package com.corejsf;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.LinkedList;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 
 @ManagedBean(name = "course")
 @SessionScoped
@@ -14,49 +14,21 @@ public class Course implements Serializable{
     
     private boolean selected;
     private Integer id;
-    private String department = "IR";
+    private String department;
     private Integer teachingYear;
     private String code;
     private String name;
     private String semester;
-    private Integer year = 2013;
+    private Integer year = Calendar.getInstance().get(Calendar.YEAR);
     private Teacher teacher;
     private LinkedList<Teacher> teachers = new LinkedList<Teacher>();
-    private static SelectItem[] years;
-    public static SelectItem[] teachingYears;
-    public static SelectItem[] departments;
-    private static SelectItem[] semesters = new SelectItem[]{
-                                                                new SelectItem("summer", "summer"),
-                                                                new SelectItem("winter", "winter")
-                                                            };
-    static {
-        teachingYears = new SelectItem[5];
-        //teachingYears[0] = new SelectItem(null, "Select year", "", false, false, true);
-        for(int i = 0; i < 5; i++) {
-            teachingYears[i] = new SelectItem(i+1, Integer.toString(i+1));
-        }
-        
-        departments = new SelectItem[7];
-        //departments[0] = new SelectItem(null, "Select one", "", false, false, true);
-        departments[0] = new SelectItem("IR", "IR");
-        departments[1] = new SelectItem("OT", "OT");
-        departments[2] = new SelectItem("OS", "OS");
-        departments[3] = new SelectItem("OG", "OG");
-        departments[4] = new SelectItem("OE", "OE");
-        departments[5] = new SelectItem("OF", "OF");
-        departments[6] = new SelectItem("SI", "SI");
+    private static String[] departments = {"IR", "OT", "OS", "OG", "OE", "OF", "SI"};
+    private static String[] teachingYears = {"1", "2", "3", "4", "M"};
+    private static String[] semesters = {"summer", "winter"};
     
-        years = new SelectItem[50];
-        //years[0] = new SelectItem(null, "Select year", "", false, false, true);
-        for(int i = 0; i < 50; i++) {
-            years[i] = new SelectItem(2000+i, Integer.toString(2000+i));
-        }
-    }
-
-    public SelectItem[] getSemesters(){ return semesters; }
-    public SelectItem[] getYears(){ return years; }
-    public SelectItem[] getDepartments(){ return departments; }
-    public SelectItem[] getTeachingYears(){ return teachingYears; }
+    public String[] getTeachingYears() { return teachingYears; }
+    public String[] getDepartments() { return departments; }
+    public String[] getSemesters(){ return semesters; }
 
     public boolean isSelected() { return selected; }
     public void setSelected(boolean selected) { this.selected = selected; }
@@ -69,6 +41,15 @@ public class Course implements Serializable{
 
     public Integer getTeachingYear() { return teachingYear; }
     public void setTeachingYear(Integer teachingYear) { this.teachingYear = teachingYear; }
+    
+    public String getTeachingYearString() { return teachingYear == null? "": Integer.toString(teachingYear); }
+    public void setTeachingYearString(String teachingYear) {
+        if(teachingYear.equals("M")){
+            this.teachingYear = 5;
+        } else {
+            this.teachingYear = Integer.parseInt(teachingYear);
+        }
+    }
     
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
@@ -109,7 +90,7 @@ public class Course implements Serializable{
         code = null;
         name = null;
         semester = null;
-        year = null;
+        year = Calendar.getInstance().get(Calendar.YEAR);
         teacher = null;
         teachers = new LinkedList<Teacher>();
     }

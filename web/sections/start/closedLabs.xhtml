@@ -11,7 +11,7 @@
     <h:body>
         <ui:composition>
             <h:form>
-                <p:dataTable value="#{teacher.closedLabs}" var="l">
+                <p:dataTable value="#{teacher.closedLabs}" var="l" rendered="#{not empty teacher.closedLabs}">
                     <p:column headerText="#{msgs.coursePrompt}">
                         #{l.course.department}#{l.course.teachingYear}#{l.course.code}
                     </p:column>
@@ -43,6 +43,7 @@
                         <p:commandButton value="#{msgs.details}" action="#{teacher.showLab(l, nav)}" process="@form" update=":pagecontent"/>
                     </p:column>
                 </p:dataTable>
+                <h:outputText value="#{msgs.noClosedLabs}" styleClass="emphasis arialed" rendered="#{empty teacher.closedLabs}"/>
                 <p></p>
                 <p:column>
                     <p:commandButton value="Other labs" action="#{nav.setPage('/sections/start/labs.xhtml')}" update=":pagecontent"/>

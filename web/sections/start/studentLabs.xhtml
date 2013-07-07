@@ -13,7 +13,7 @@
                 <h:outputText value="#{msgs.acceptedPrompt}" styleClass="emphasis"/>
             </p:panel>
             <p></p>
-            <p:dataTable value="#{student.acceptedInvitations}" var="l">
+            <p:dataTable value="#{student.acceptedInvitations}" var="l" rendered="#{not empty student.acceptedInvitations}">
                 <p:column headerText="#{msgs.coursePrompt}">
                     #{l.course.department}#{l.course.teachingYear}#{l.course.code}
                 </p:column>
@@ -42,12 +42,15 @@
                     #{l.typeString}
                 </p:column>
             </p:dataTable>
+            <h:panelGroup rendered="#{empty student.acceptedInvitations}">
+                <h:outputText value="#{msgs.noAccepted}" styleClass="emphasis arialed"/>
+            </h:panelGroup>
             <p></p>
             <p:panel>
                 <h:outputText value="#{msgs.paymentsPrompt}" styleClass="emphasis"/>
             </p:panel>
             <p></p>
-            <p:dataTable value="#{student.payments}" var="p">
+            <p:dataTable value="#{student.payments}" var="p" rendered="#{not empty student.payments}">
                 <p:column headerText="#{msgs.coursePrompt}">
                     #{p.lab.course.department}#{p.lab.course.teachingYear}#{p.lab.course.code}
                 </p:column>
@@ -81,15 +84,23 @@
                     </h:outputText>
                 </p:column>
                 <p:column headerText="#{msgs.amountPrompt}">
-                    #{p.amount} din.
+                    <h:outputText value="#{p.amount}">
+                        <f:convertNumber maxFractionDigits="2"/>
+                    </h:outputText>
+                    din.
                 </p:column>
             </p:dataTable>
             <p></p>
-            <p:panel styleClass="total">
+            <p:panel styleClass="total" rendered="#{not empty student.payments}">
                 <h:outputText value="#{msgs.totalPrompt}" styleClass="emphasis"/>
                 :
-                <h:outputText value="#{student.totalPayments} din." styleClass="emphasis"/> 
+                <h:outputText value="#{student.totalPayments} din." styleClass="emphasis">
+                    <f:convertNumber maxFractionDigits="2" />
+                </h:outputText>
             </p:panel>
+            <h:panelGroup rendered="#{empty student.payments}">
+                <h:outputText value="#{msgs.noPayments}" styleClass="emphasis arialed"/>
+            </h:panelGroup>
         </h:form>
     </h:body>
 </html>

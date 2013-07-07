@@ -6,6 +6,10 @@
     font-size: 1.3em;
 }
 
+.arialed {
+    font-family: arial;
+}
+
 .error {
     color: red;
 }
