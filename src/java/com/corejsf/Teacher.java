@@ -23,6 +23,7 @@ public class Teacher implements Serializable{
     private boolean showCoursesInMenu;
     private LinkedList<Lab> labs;
     private Lab currlab;
+    private LinkedList<LinkedList<Demonstrator>> eligibleStudents;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -55,6 +56,9 @@ public class Teacher implements Serializable{
     
     public Lab getCurrlab() { return currlab; }
     public void setCurrlab(Lab currlab) { this.currlab = currlab; }
+    
+    public LinkedList<LinkedList<Demonstrator>> getEligibleStudents() { return eligibleStudents; }
+    public void setEligibleStudents(LinkedList<LinkedList<Demonstrator>> eligibleStudents) { this.eligibleStudents = eligibleStudents; }
     
     public String getAppliesNum(){
         int num = 0;
@@ -190,6 +194,67 @@ public class Teacher implements Serializable{
             }
         }
         return closed;
+    }
+    
+    public String loadEligibleStudents(String username, Nav nav) {
+        try{
+            App.getInstance().loadEligibleStudents(username, this);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        nav.setPage("/sections/start/addDemonstrator.xhtml");
+        return "start";
+    }
+        
+    public void searchEligibleStudents(Search search) {
+        if(search.getSelectedCourse() == null) {
+            search.setResult(new LinkedList<Demonstrator>());
+            return;
+        }
+        int selected = -1;
+        for(int i = 0; i < courses.size(); i++) {
+            if(courses.get(i).getId() == search.getSelectedCourse().getId()){
+                selected = i;
+            }
+        }
+        LinkedList<Demonstrator> result = new LinkedList<Demonstrator>();
+        if(selected != -1){
+            for(Demonstrator d: eligibleStudents.get(selected)){
+                boolean nameEq = false;
+                boolean surnameEq = false;
+                if((search.getName()==null || search.getName().isEmpty())){
+                    nameEq = true;
+                } else if(search.getName().equals(d.getUser().getName())){
+                    nameEq = true;
+                }
+                if(search.getSurname() == null || search.getSurname().isEmpty()){
+                    surnameEq = true;
+                } else if(search.getSurname().equals(d.getUser().getSurname())){
+                    surnameEq = true;
+                }
+                if(nameEq && surnameEq){
+                    result.add(d);
+                }
+            }
+        }
+        search.setResult(result);
+    }
+    
+    public String addNewDemonstrator(Search s, Demonstrator d) {
+        try{
+            App.getInstance().addNewDemonstrator(s.getSelectedCourse(), d);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        int selected = -1;
+        for(int i = 0; i < courses.size(); i++) {
+            if(courses.get(i).getId() == s.getSelectedCourse().getId()){
+                selected = i;
+            }
+        }
+        eligibleStudents.get(selected).remove(d);
+        searchEligibleStudents(s);
+        return "start";
     }
     
     @Override

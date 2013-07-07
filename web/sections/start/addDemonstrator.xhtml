@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>IGNORED</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panelGrid columns="2" styleClass="signupcell">
+                <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis bolded"/>
+                <p:inputText value="#{search.name}">
+                    <p:ajax event="keyup" listener="#{teacher.searchEligibleStudents(search)}" update="results"/>
+                </p:inputText>
+
+                <h:outputText value="#{msgs.surnamePrompt}" styleClass="emphasis bolded"/>
+                <p:inputText value="#{search.surname}">
+                    <p:ajax event="keyup" listener="#{teacher.searchEligibleStudents(search)}" update="results"/>
+                </p:inputText>
+            </p:panelGrid>
+            <p></p>
+            <h:panelGroup id="courses">
+                <p:selectOneMenu value="#{search.selectedCourse}">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
+                    <p:ajax event="change" listener="#{teacher.searchEligibleStudents(search)}" update="results"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+            <p></p>
+            <h:panelGroup id="results">
+                <p:dataTable value="#{search.result}" var="d" rendered="#{not empty search.result}">
+                    <p:column headerText="#{msgs.namePrompt}">
+                        #{d.user.name}
+                    </p:column>
+                    <p:column headerText="#{msgs.surnamePrompt}">
+                        #{d.user.surname}
+                    </p:column>
+                    <p:column headerText="#{msgs.phonePrompt}">
+                        #{d.user.phone}
+                    </p:column>
+                    <p:column headerText="#{msgs.emailPrompt}">
+                        #{d.user.email}
+                    </p:column>
+                    <p:column headerText="#{msgs.yearPrompt}">
+                        #{d.student.year}
+                    </p:column>
+                    <p:column headerText="#{msgs.GPAPrompt}">
+                        #{d.student.GPA}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="#{msgs.addUserText}" action="#{teacher.addNewDemonstrator(search,d)}" process="@form" update=":pagecontent"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+    </h:body>
+</html>
+

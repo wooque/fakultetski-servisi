@@ -8,7 +8,6 @@ import com.corejsf.Demonstrator;
 import com.corejsf.Lab;
 import com.corejsf.Payment;
 import com.corejsf.Search;
-import com.corejsf.Search.Elem;
 import com.corejsf.Signup;
 import com.corejsf.Student;
 import com.corejsf.Teacher;
@@ -733,9 +732,9 @@ public class App {
             }
             query.append(" group by d.username;");
             ResultSet rs = stat.executeQuery(query.toString());
-            LinkedList<Elem> result = new LinkedList<Elem>();
+            LinkedList<Demonstrator> result = new LinkedList<Demonstrator>();
             while(rs.next()){
-                Elem e = new Elem();
+                Demonstrator d = new Demonstrator();
                 User u = new User();
                 Student s = new Student();
                 u.setName(rs.getString("name"));
@@ -744,9 +743,9 @@ public class App {
                 u.setEmail(rs.getString("email"));
                 s.setYear(rs.getInt("year"));
                 s.setGPA(rs.getFloat("gpa"));
-                e.setStudent(s);
-                e.setUser(u);
-                result.add(e);
+                d.setStudent(s);
+                d.setUser(u);
+                result.add(d);
             }
             search.setResult(result);
             stat.close();
@@ -1239,6 +1238,76 @@ public class App {
                 }
                 admin.setDemonstrators(demonstrators);
             }
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void loadEligibleStudents(String username, Teacher teacher) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            if(cal.get(Calendar.MONTH) < 9) {
+                year--;
+            }
+            Statement stat = conn.createStatement();
+            LinkedList<LinkedList<Demonstrator>> eligibleStudents = new LinkedList<LinkedList<Demonstrator>>();
+            for(Course currCourse: teacher.getCourses()) {
+                String query = "select u.username, u.name, u.surname, u.phone, u.email, "
+                        + "s.department, s.year, s.GPA, c.CourseID "
+                        + "from User u, Student s, Course c "
+                        + "where u.username=s.username and c.department=s.department and c.teachyear<s.year and "
+                        + "((c.year='"+year+"' and c.semester=1) or (c.year='"+(year+1)+"' and c.semester=0))  and "
+                        + "c.CourseID='"+currCourse.getId()+"' and "
+                        + "u.username not in (select d.username from Demonstrator d where d.CourseID='"+currCourse.getId()+"');";
+                ResultSet rs = stat.executeQuery(query);
+                LinkedList<Demonstrator> demons = new LinkedList<Demonstrator>();
+                while(rs.next()){
+                    User user= new User();
+                    Student student = new Student();
+                    user.setUsername(rs.getString("username"));
+                    user.setName(rs.getString("name"));
+                    user.setSurname(rs.getString("surname"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setEmail(rs.getString("email"));
+                    student.setDepartment(rs.getString("department"));
+                    student.setYear(rs.getInt("year"));
+                    student.setGPA(rs.getFloat("gpa"));
+                    Demonstrator demonstrator = new Demonstrator();
+                    demonstrator.setUser(user);
+                    demonstrator.setStudent(student);
+                    demons.add(demonstrator);
+                }
+                eligibleStudents.add(demons);
+            }
+            teacher.setEligibleStudents(eligibleStudents);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+    }
+    
+    public void addNewDemonstrator(Course c, Demonstrator d) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query;
+            query = "insert into Demonstrator (CourseID, username) values ('"+c.getId()+"','"+d.getUser().getUsername()+"');";
+            stat.executeUpdate(query);
             stat.close();
         } catch (SQLException ex) {
             DB.getInstance().putConnection(conn);

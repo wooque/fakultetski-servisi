@@ -26,12 +26,17 @@
                 </div>
             </ui:repeat>
             <div class="menuItem">
-                    <h:form>
-                        <p:commandLink value="Labs" action="#{teacher.loadLabs(nav)}" update=":pagecontent" styleClass="menuLink"/>
-                    </h:form>
-                </div>
+                <h:form>
+                    <p:commandLink value="Labs" action="#{teacher.loadLabs(nav)}" update=":pagecontent" styleClass="menuLink"/>
+                </h:form>
+            </div>
             <corejsf:menuItem label="Add lab exercise" page="/sections/start/addLab.xhtml" update=":pagecontent"/>
             <corejsf:menuItem label="Search" page="/sections/start/search.xhtml" update=":pagecontent"/>
+            <div class="menuItem">
+                <h:form>
+                    <p:commandLink value="Add demonstrator" action="#{teacher.loadEligibleStudents(user.username, nav)}" update=":pagecontent" styleClass="menuLink"/>
+                </h:form>
+            </div>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>
