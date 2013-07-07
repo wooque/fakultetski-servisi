@@ -135,7 +135,6 @@ public class Teacher implements Serializable{
             lab.clear();
         } else {
             nav.setPage("/sections/start/addLab.xhtml");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Lab practice already exist", "IGNORED"));
         }
         return "start";
     }

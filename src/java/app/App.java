@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Properties;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 public class App {
@@ -849,11 +850,24 @@ public class App {
         }
         try {
             Statement stat = conn.createStatement();
-            String query = "select * from Lab where CourseID='"+lab.getCourse().getId()+"' and name='"+lab.getName()+"';";
+            String query = "select * from Lab where ClassroomID='"+lab.getClassroom().getId()+"' and "
+                    + "((begin>='"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getBegin())+"' and "
+                    + "begin<='"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getEnd())+"') or "
+                    + "(end<='"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getEnd())+"' and "
+                    + "end>='"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lab.getBegin())+"'));";
             ResultSet rs = stat.executeQuery(query);
             if(rs.next()){
                 stat.close();
                 DB.getInstance().putConnection(conn);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Classroom or termin is occupied", "IGNORED"));
+                return false;
+            }
+            query = "select * from Lab where CourseID='"+lab.getCourse().getId()+"' and name like '"+lab.getName()+"';";
+            rs = stat.executeQuery(query);
+            if(rs.next()){
+                stat.close();
+                DB.getInstance().putConnection(conn);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Lab practice already exist", "IGNORED"));
                 return false;
             }
             query = "insert into Lab (CourseID, name, begin, end, ClassroomID, type, maxDemons) values ('"+

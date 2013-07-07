@@ -17,13 +17,17 @@
                 <p:panelGrid columns="3" styleClass="lab">
                     <h:outputText value="#{msgs.coursePrompt}" styleClass="emphasis"/>
                     <p:selectOneMenu id="course" value="#{lab.course}" required="true" requiredMessage="#{msgs.codeRequired}">
+                        <f:selectItem itemLabel="Select one" itemValue="#{null}"/>
                         <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
                         <p:ajax event="change" listener="#{lab.loadDemonstrators}" update="actions"/>
                     </p:selectOneMenu>
                     <p:message for="course"/>
                     
                     <h:outputText value="#{msgs.namePrompt}" styleClass="emphasis"/>
-                    <p:inputText id="name" value="#{lab.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
+                    <p:inputText id="name" value="#{lab.name}"
+                                 required="true" requiredMessage="#{msgs.nameRequired}" validatorMessage="#{msgs.nameInvalid}">
+                        <f:validateRegex pattern="^[A-Za-z]{1,20}$"/>
+                    </p:inputText>
                     <p:message for="name"/>
 
                     <h:outputText value="#{msgs.beginPrompt}" styleClass="emphasis"/>
@@ -39,7 +43,7 @@
                     <p:message for="end"/>
                     
                     <h:outputText value="#{msgs.classroomPrompt}" styleClass="emphasis"/>
-                    <p:autoComplete id="class" value="#{lab.classroom}" required="true" requiredMessage="#{msgs.classroomRequired}" 
+                    <p:autoComplete id="class" value="#{lab.classroom}" required="true" requiredMessage="#{msgs.classroomRequired}" forceSelection="true"
                                     completeMethod="#{lab.completeClassroom}" var="c" itemLabel="#{c.location} - #{c.type} #{c.number}" itemValue="#{c}"/>
                     <p:message for="class"/>
                     

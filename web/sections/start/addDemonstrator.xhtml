@@ -21,13 +21,11 @@
                 </p:inputText>
             </p:panelGrid>
             <p></p>
-            <h:panelGroup id="courses">
-                <p:selectOneMenu value="#{search.selectedCourse}">
-                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
-                    <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c}" itemValue="#{c}"/>
-                    <p:ajax event="change" listener="#{teacher.searchEligibleStudents(search)}" update="results"/>
-                </p:selectOneMenu>
-            </h:panelGroup>
+            <p:selectOneMenu value="#{search.selectedCourse}">
+                <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                <f:selectItems value="#{teacher.courses}" var="c" itemLabel="#{c.department}#{c.teachingYear}#{c.code}" itemValue="#{c}"/>
+                <p:ajax event="change" listener="#{teacher.searchEligibleStudents(search)}" update="results"/>
+            </p:selectOneMenu>
             <p></p>
             <h:panelGroup id="results">
                 <p:dataTable value="#{search.result}" var="d" rendered="#{not empty search.result}">

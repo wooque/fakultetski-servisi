@@ -3,9 +3,12 @@ package com.corejsf;
 import app.App;
 import db.DBError;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean(name = "student")
@@ -79,6 +82,24 @@ public class Student implements Serializable{
     }
     
     public String acceptLab(String username, Lab lab) {
+        for(Lab acc: acceptedInvitations){
+            Date accBegin = acc.getBegin();
+            Date accEnd = acc.getEnd();
+            Date labBegin = lab.getBegin();
+            Date labEnd = lab.getEnd();
+            if(((labBegin.compareTo(accBegin)>=0) && (labBegin.compareTo(accEnd)<=0)) ||
+                    ((labEnd.compareTo(accEnd)<=0) && (labEnd.compareTo(accBegin)>=0))){
+                try{
+                    App.getInstance().rejectLab(username, this, lab);
+                } catch(DBError dbe){
+                    return "error";
+                }
+                invitations.remove(lab);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "You already accpted lab in that period", "IGNOREd"));
+                return "start";
+            }
+            
+        }
         invitations.remove(lab);
         acceptedInvitations.add(lab);
         try{

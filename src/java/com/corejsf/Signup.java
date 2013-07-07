@@ -7,7 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 
 @SessionScoped
 @ManagedBean(name = "signup")
@@ -23,33 +22,14 @@ public class Signup implements Serializable {
     private String department;
     private Integer year;
     private Float GPA;
-    private static SelectItem[] types = new SelectItem[]{
-                                                            new SelectItem("student", "Student"),
-                                                            new SelectItem("teacher", "Teacher")
-                                                        };
-    public static SelectItem[] years;
-    public static SelectItem[] departments;
-
-    static {
-        years = new SelectItem[6];
-        years[0] = new SelectItem(null, "Select year", "", false, false, true);
-        for(int i = 1; i < 6; i++) {
-            years[i] = new SelectItem(i, Integer.toString(i));
-        }
-        departments = new SelectItem[8];
-        departments[0] = new SelectItem(null, "Select one", "", false, false, true);
-        departments[1] = new SelectItem("IR", "IR");
-        departments[2] = new SelectItem("OT", "OT");
-        departments[3] = new SelectItem("OS", "OS");
-        departments[4] = new SelectItem("OG", "OG");
-        departments[5] = new SelectItem("OE", "OE");
-        departments[6] = new SelectItem("OF", "OF");
-        departments[7] = new SelectItem("SI", "SI");
-    };
     
-    public SelectItem[] getTypes() { return types; }
-    public SelectItem[] getYears() { return years; }
-    public SelectItem[] getDepartments() { return departments; }
+    private static String[] types = {"student", "teacher"};
+    private static String[] departments = {"IR", "OT", "OS", "OG", "OE", "OF", "SI"};
+    private static String[] years = {"1", "2", "3", "4", "M"};
+    
+    public String[] getTypes() { return types; }
+    public String[] getYears() { return years; }
+    public String[] getDepartments() { return departments; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -77,9 +57,21 @@ public class Signup implements Serializable {
 
     public Integer getYear() { return year; }
     public void setYear(Integer year) { this.year = year; }
+    
+    public String getYearString() { return year == null? "": Integer.toString(year); }
+    public void setYearString(String year) {
+        if(year.equals("M")){
+            this.year = 5;
+        } else {
+            this.year = Integer.parseInt(year);
+        }
+    }
 
     public Float getGPA() { return GPA; }
     public void setGPA(Float GPA) { this.GPA = GPA; }
+    
+    public String getGPAString() { return GPA == null? "": Float.toString(GPA); }
+    public void setGPAString(String GPA) { this.GPA = Float.parseFloat(GPA); }
    
     public void checkUsername(){
         boolean outcome;

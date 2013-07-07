@@ -10,6 +10,9 @@
     </h:head>
     <h:body>
         <ui:composition>
+            <p>
+                <p:messages globalOnly="true"/>
+            </p>
             <h:form id="invform">
                 <p:dataTable id="invs" value="#{student.invitations}" var="l">
                     <p:column headerText="#{msgs.coursePrompt}">
