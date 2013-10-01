@@ -4,6 +4,7 @@ import com.corejsf.Admin;
 import com.corejsf.Course;
 import com.corejsf.Signup;
 import com.corejsf.Student;
+import com.corejsf.Teacher;
 import com.corejsf.User;
 import db.DB;
 import db.DBError;
@@ -299,5 +300,31 @@ public class App {
         }
         DB.getInstance().putConnection(conn);
         return true;
+    }
+    public LinkedList<Teacher> completeTeacher(String input) throws DBError {
+        Connection conn = db.getConnection();
+        LinkedList<Teacher> teacherlist = new LinkedList<Teacher>();
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "select username, name, surname from User u where u.type='teacher' and (username like '"+input+"%'"
+                            +" or name like '"+input+"%'"+" or surname like '"+input+"%'"+");";
+            ResultSet rs = stat.executeQuery(query);
+            while(rs.next()){
+                Teacher teacher = new Teacher();
+                teacher.setName(rs.getString("name"));
+                teacher.setSurname(rs.getString("surname"));
+                teacher.setUsername(rs.getString("username"));
+                teacherlist.add(teacher);
+            }
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+        return teacherlist;
     }
 }

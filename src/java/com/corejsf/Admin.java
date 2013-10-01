@@ -55,7 +55,7 @@ public class Admin implements Serializable{
         return "start";
     }
     
-    public String addCourse(Course course) {
+    public String addCourse(Course course, Nav nav) {
         boolean outcome;
         try {
             outcome = App.getInstance().add(course);
@@ -65,8 +65,9 @@ public class Admin implements Serializable{
         if (!outcome) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Course exist", "IGNORED"));
         } else {
-            course.clear();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Course added", "IGNORED"));
+            //course.clear();
+            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Course added", "IGNORED"));
+            nav.setPage("/sections/start/courseTeachers.xhtml");
         }
         return "start";
     }

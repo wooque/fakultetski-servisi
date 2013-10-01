@@ -35,7 +35,7 @@
                         <p:message id="namemsg" for="name"/>
 
                         <h:outputText id="semesterlabel" styleClass="emphasis" value="#{msgs.semesterPrompt}"/>
-                        <p:selectOneRadio id="semester" value="#{course.semester}" required="true" requiredMessage="#{msgs.semesterRequired}">
+                        <p:selectOneRadio id="semester" value="#{course.semester}" required="true" requiredMessage="#{msgs.semesterRequired}" styleClass="semesters">
                             <f:selectItems value="#{course.semesters}"/>
                         </p:selectOneRadio>
                         <p:message id="semestermsg" for="semester"/>
@@ -45,8 +45,9 @@
                             <f:selectItems value="#{course.years}"/>
                         </p:selectOneMenu>
                         <p:message id="yearmsg" for="year"/>
+                        
                         <p:messages id="allmsg" globalOnly="true" autoUpdate="true"/>
-                        <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course)}" update=":pagecontent"/>
+                        <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course, nav)}" update=":pagecontent"/>
                     </p:panelGrid>
                 </h:panelGrid>
             </h:form>

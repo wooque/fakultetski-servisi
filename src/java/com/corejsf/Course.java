@@ -1,12 +1,13 @@
 package com.corejsf;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 
 @ManagedBean(name = "course")
-@RequestScoped
+@SessionScoped
 public class Course implements Serializable{
     
     private String department = "IR";
@@ -15,6 +16,8 @@ public class Course implements Serializable{
     private String name;
     private String semester;
     private Integer year = 2013;
+    private Teacher teacher;
+    private LinkedList<Teacher> teachers = new LinkedList<Teacher>();
     private static SelectItem[] years;
     public static SelectItem[] teachingYears;
     public static SelectItem[] departments;
@@ -56,6 +59,7 @@ public class Course implements Serializable{
 
     public Integer getTeachingYear() { return teachingYear; }
     public void setTeachingYear(Integer teachingYear) { this.teachingYear = teachingYear; }
+    
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
 
@@ -67,7 +71,31 @@ public class Course implements Serializable{
 
     public Integer getYear() { return year; }
     public void setYear(Integer year) { this.year = year; }
+    
+    public Teacher getTeacher() { return teacher; }
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+    
+    public LinkedList<Teacher> getTeachers() { return teachers; }
+    public void setTeachers(LinkedList<Teacher> teachers) { this.teachers = teachers; }
    
+    public String addTeacher(){
+        teachers.add(teacher);
+        teacher = null;
+        return "start";
+    }
+    
+    public String removeTeacher(Teacher teacher) {
+        teachers.remove(teacher);
+        return "start";
+    }
+    
+    public String saveTeachers(Nav nav){
+        // save teachers in database
+        nav.setPage("/sections/start/courses.xhtml");
+        clear();
+        return "start";
+    }
+    
     public void clear() {
         department = null;
         teachingYear = null;
@@ -75,5 +103,7 @@ public class Course implements Serializable{
         name = null;
         semester = null;
         year = null;
+        teacher = null;
+        teachers = null;
     }
 }
