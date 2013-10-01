@@ -16,7 +16,10 @@
                                    update=":pagecontent,requestitem" styleClass="#{admin.signUpsNum == '0'? 'menuLink': 'menuLinkEmphased'}"/>
                 </h:form>
             </div>
-            <corejsf:menuItem label="Add users" page="/sections/start/add.xhtml" update=":pagecontent"/>
+            <corejsf:menuItem label="Add users" page="/sections/start/users.xhtml" update=":pagecontent"/>
+            <h:panelGroup rendered="#{user.beginOfTheYear}">
+                <corejsf:menuItem label="Add courses" page="/sections/start/courses.xhtml" update=":pagecontent"/>
+            </h:panelGroup>
             <div class="menuItem">
                 <h:form>
                     <p:commandLink value="Log out" action="#{user.logOut()}" styleClass="menuLink"/>

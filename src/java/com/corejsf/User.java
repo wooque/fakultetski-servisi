@@ -3,6 +3,7 @@ package com.corejsf;
 import app.App;
 import db.DBError;
 import java.io.Serializable;
+import java.util.Calendar;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -20,6 +21,7 @@ public class User implements Serializable {
     private String surname;
     private String phone;
     private String email;
+    private boolean beginOfTheYear;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -45,6 +47,8 @@ public class User implements Serializable {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
     
+    public boolean getBeginOfTheYear() { return beginOfTheYear; }
+    
     public String logMeIn(Admin admin, Student student, Nav nav) {
         boolean outcome;
         try {
@@ -60,6 +64,8 @@ public class User implements Serializable {
             } else {
                  nav.setPage("/sections/start/teacher.xhtml");
             }
+            int month = Calendar.getInstance().get(Calendar.MONTH);
+            beginOfTheYear = (month == 9);
             return "start?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wrong username or password", "IGNORED"));
@@ -88,5 +94,5 @@ public class User implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index?faces-redirect=true";
     }
-   
+
 }

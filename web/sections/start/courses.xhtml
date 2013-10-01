@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Ignored</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <h:panelGrid columns="2" styleClass="signup">
+                    <p:panelGrid columns="1" styleClass="signupcell">
+                        <h:outputText id="departmentlabel" styleClass="emphasis" value="#{msgs.departmentPrompt}"/>
+                        <p:selectOneMenu id="department" value="#{course.department}" required="true" requiredMessage="#{msgs.departmentRequired}">
+                            <f:selectItems value="#{course.departments}"/>
+                        </p:selectOneMenu>
+                        <p:message id="departmentmsg" for="department"/>
+
+                        <h:outputText id="teachyearlabel" styleClass="emphasis" value="#{msgs.yearPrompt}"/>
+                        <p:selectOneMenu id="teachyear" value="#{course.teachingYear}" required="true" requiredMessage="#{msgs.yearRequired}">
+                            <f:selectItems value="#{course.teachingYears}"/>
+                        </p:selectOneMenu>
+                        <p:message id="teachyearmsg" for="teachyear"/> 
+
+                        <h:outputText id="codelabel" styleClass="emphasis" value="#{msgs.codePrompt}"/>
+                        <p:inputText id="code" value="#{course.code}" required="true" requiredMessage="#{msgs.codeRequired}"/>
+                        <p:message id="codemsg" for="code"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="1" styleClass="signupcell">
+                        <h:outputText id="namelabel" styleClass="emphasis" value="#{msgs.namePrompt}"/>
+                        <p:inputText id="name" value="#{course.name}" required="true" requiredMessage="#{msgs.nameRequired}"/>
+                        <p:message id="namemsg" for="name"/>
+
+                        <h:outputText id="semesterlabel" styleClass="emphasis" value="#{msgs.semesterPrompt}"/>
+                        <p:selectOneRadio id="semester" value="#{course.semester}" required="true" requiredMessage="#{msgs.semesterRequired}">
+                            <f:selectItems value="#{course.semesters}"/>
+                        </p:selectOneRadio>
+                        <p:message id="semestermsg" for="semester"/>
+
+                        <h:outputText id="yearlabel" styleClass="emphasis" value="#{msgs.yearPrompt}"/>
+                        <p:selectOneMenu id="year" value="#{course.year}" required="true" requiredMessage="#{msgs.yearRequired}">
+                            <f:selectItems value="#{course.years}"/>
+                        </p:selectOneMenu>
+                        <p:message id="yearmsg" for="year"/>
+                        <p:messages id="allmsg" globalOnly="true" autoUpdate="true"/>
+                        <p:commandButton value="#{msgs.addCourseText}" action="#{admin.addCourse(course)}" update=":pagecontent"/>
+                    </p:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
+

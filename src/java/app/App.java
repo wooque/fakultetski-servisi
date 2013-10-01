@@ -1,6 +1,7 @@
 package app;
 
 import com.corejsf.Admin;
+import com.corejsf.Course;
 import com.corejsf.Signup;
 import com.corejsf.Student;
 import com.corejsf.User;
@@ -269,5 +270,34 @@ public class App {
             throw new DBError();
         }
         DB.getInstance().putConnection(conn);
+    }
+    
+    public boolean add(Course course) throws DBError {
+        Connection conn = db.getConnection();
+        
+        if(conn==null){
+            throw new DBError();
+        }
+        try {
+            Statement stat = conn.createStatement();
+            String query = "select * from Course where department='"+course.getDepartment()+"' and teachyear='"+course.getTeachingYear()
+                            +"' and code='"+course.getCode()+"' and year='"+course.getYear()+"';";
+            ResultSet rs = stat.executeQuery(query);
+            if(rs.next()){
+                stat.close();
+                DB.getInstance().putConnection(conn);
+                return false;
+            }
+            query = "insert into Course (department, teachyear, code, name, semester, year) values ('"
+                    +course.getDepartment()+"','"+course.getTeachingYear()+"','"+course.getCode()+"','"+course.getName()+"',"
+                    +(course.getSemester().equals("winter")?1:0)+",'"+course.getYear()+"');";
+            stat.executeUpdate(query);
+            stat.close();
+        } catch (SQLException ex) {
+            DB.getInstance().putConnection(conn);
+            throw new DBError();
+        }
+        DB.getInstance().putConnection(conn);
+        return true;
     }
 }

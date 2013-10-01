@@ -26,3 +26,12 @@ create table Signup(	username VARCHAR(20),
                         year INTEGER,
                         gpa FLOAT,
                         PRIMARY KEY(username));
+
+create table Course(    CourseID INTEGER AUTO_INCREMENT,
+                        department VARCHAR(2),
+                        teachyear INTEGER,
+                        code VARCHAR(3),
+                        name VARCHAR(30),
+                        semester BIT,
+                        year INTEGER,
+                        PRIMARY KEY(CourseID));

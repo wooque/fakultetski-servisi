@@ -54,4 +54,20 @@ public class Admin implements Serializable{
         nav.setPage("/sections/start/requests.xhtml");
         return "start";
     }
+    
+    public String addCourse(Course course) {
+        boolean outcome;
+        try {
+            outcome = App.getInstance().add(course);
+        } catch (DBError dbe) {
+            return "error";
+        }
+        if (!outcome) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Course exist", "IGNORED"));
+        } else {
+            course.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Course added", "IGNORED"));
+        }
+        return "start";
+    }
 }

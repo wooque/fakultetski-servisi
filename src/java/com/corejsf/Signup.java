@@ -27,8 +27,8 @@ public class Signup implements Serializable {
                                                             new SelectItem("student", "Student"),
                                                             new SelectItem("teacher", "Teacher")
                                                         };
-    private static SelectItem[] years;
-    private static SelectItem[] departments;
+    public static SelectItem[] years;
+    public static SelectItem[] departments;
 
     static {
         years = new SelectItem[6];
